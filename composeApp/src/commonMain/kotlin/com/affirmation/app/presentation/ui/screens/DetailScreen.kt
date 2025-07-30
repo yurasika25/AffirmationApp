@@ -1,4 +1,4 @@
-package com.affirmation.app.ui
+package com.affirmation.app.presentation.ui.screens
 
 import affirmationapp.composeapp.generated.resources.Res
 import affirmationapp.composeapp.generated.resources.im_back

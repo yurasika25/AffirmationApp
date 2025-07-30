@@ -1,4 +1,4 @@
-package com.affirmation.app.ui
+package com.affirmation.app.presentation.ui.screens
 
 import affirmationapp.composeapp.generated.resources.Res
 import affirmationapp.composeapp.generated.resources.*
@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.*
 import cafe.adriel.voyager.core.screen.Screen
-import com.affirmation.app.model.NavItem
+import com.affirmation.app.domain.model.NavItem
 import org.jetbrains.compose.resources.painterResource
 
 class MainScreen : Screen {

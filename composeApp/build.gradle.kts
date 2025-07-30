@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-}
+    alias(libs.plugins.kotlinSerialization) }
 
 kotlin {
     androidTarget {
@@ -31,10 +31,17 @@ kotlin {
     sourceSets {
         
         androidMain.dependencies {
+            implementation("io.ktor:ktor-client-android:2.3.4")
+
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation("io.ktor:ktor-client-okhttp:2.3.12")
         }
+
+
         commonMain.dependencies {
+            implementation("io.ktor:ktor-client-logging:2.3.5")
+            implementation(libs.kotlinx.serialization.json)
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -56,10 +63,17 @@ kotlin {
             implementation("cafe.adriel.voyager:voyager-transitions:1.1.0-beta02")
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
 
+            implementation("io.ktor:ktor-client-core:2.3.12")
+            implementation("io.ktor:ktor-client-content-negotiation:2.3.12")
+            implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.12")
+
 
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+        }
+        iosMain.dependencies {
+            implementation("io.ktor:ktor-client-darwin:2.3.12")
         }
     }
 }
