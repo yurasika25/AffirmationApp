@@ -44,7 +44,7 @@ class MainScreen : Screen {
                 }
             }
         ) { innerPadding ->
-            Box(Modifier.padding(innerPadding)) {
+            Box(Modifier.padding(bottom = 50.dp, start = 0.dp, end = 0.dp, top = 8.dp)) {
                 screens[selectedIndex].Content()
             }
         }

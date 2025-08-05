@@ -40,6 +40,10 @@ kotlin {
 
 
         commonMain.dependencies {
+
+            implementation("cafe.adriel.voyager:voyager-navigator:1.0.1")
+            implementation("cafe.adriel.voyager:voyager-transitions:1.0.0")
+
             implementation("io.ktor:ktor-client-logging:2.3.5")
             implementation(libs.kotlinx.serialization.json)
             implementation(compose.runtime)
