@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import com.affirmation.app.createHttpClient
 import com.affirmation.app.data.network.ApiService
-import com.affirmation.app.domain.model.NotificationData
+import com.affirmation.app.domain.model.NotificationModel
 import com.affirmation.app.presentation.viewModel.NotificationsViewModel
 import com.affirmation.app.utils.GlobalTopBar
 
@@ -80,7 +80,7 @@ class NotificationScreen : Screen {
     }
 
     @Composable
-    private fun NotificationCard(notification: NotificationData) {
+    private fun NotificationCard(notification: NotificationModel) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()

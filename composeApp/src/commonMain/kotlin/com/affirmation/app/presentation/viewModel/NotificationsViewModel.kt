@@ -7,11 +7,11 @@ import kotlinx.coroutines.launch
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import com.affirmation.app.domain.model.NotificationData
+import com.affirmation.app.domain.model.NotificationModel
 
 class NotificationsViewModel(private val apiService: ApiService) : ViewModel() {
 
-    var data by mutableStateOf<List<NotificationData>>(emptyList())
+    var data by mutableStateOf<List<NotificationModel>>(emptyList())
         private set
 
     var isLoading by mutableStateOf(false)

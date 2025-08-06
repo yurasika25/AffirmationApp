@@ -19,9 +19,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.affirmation.app.data.network.ApiService
 import com.affirmation.app.createHttpClient
-import com.affirmation.app.domain.model.UserProfile
+import com.affirmation.app.domain.model.UpdateUserProfileModel
+import com.affirmation.app.domain.model.UserProfileModel
 import com.affirmation.app.utils.GlobalTopBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -34,14 +37,22 @@ class ProfileScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
+        val navigator = LocalNavigator.currentOrThrow
+        val coroutineScope = rememberCoroutineScope()
         val apiService = remember { ApiService(createHttpClient()) }
-        var userProfile by remember { mutableStateOf<UserProfile?>(null) }
+        var userProfileModel by remember { mutableStateOf<UserProfileModel?>(null) }
         var error by remember { mutableStateOf<String?>(null) }
         var showLogoutDialog by remember { mutableStateOf(false) }
 
+
+        var newName by remember { mutableStateOf("") }
+        var isLoading by remember { mutableStateOf(false) }
+        var updateMessage by remember { mutableStateOf<String?>(null) }
+
         LaunchedEffect(Unit) {
             val profile = loadUserProfile(apiService)
-            if (profile != null) userProfile = profile else error = "Failed to load profile"
+            getUserDetails(apiService)
+            if (profile != null) userProfileModel = profile else error = "Failed to load profile"
         }
 
         val backgroundColor = Color(0xFFFDF7FF)
@@ -49,7 +60,7 @@ class ProfileScreen : Screen {
         Scaffold(
             topBar = { GlobalTopBar("My Profile") },
         ) { padding ->
-        when {
+            when {
                 error != null -> Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -63,7 +74,7 @@ class ProfileScreen : Screen {
                     )
                 }
 
-                userProfile == null -> Box(
+                userProfileModel == null -> Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(padding),
@@ -108,30 +119,49 @@ class ProfileScreen : Screen {
 
                                 Spacer(modifier = Modifier.height(16.dp))
                                 Text(
-                                    text = "${userProfile!!.firstName} ${userProfile!!.latestName}",
+                                    text = "${userProfileModel!!.firstName} ${userProfileModel!!.lastName}",
                                     style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold)
                                 )
 
                                 Spacer(modifier = Modifier.height(8.dp))
-                                ProfileDetailRow(label = "Age", value = userProfile!!.age.toString())
-                                ProfileDetailRow(label = "Gender", value = userProfile!!.gender)
-                                ProfileDetailRow(label = "Phone", value = userProfile!!.phoneNumber)
-                                ProfileDetailRow(label = "Email", value = userProfile!!.email)
+                                ProfileDetailRow(
+                                    label = "Age",
+                                    value = userProfileModel!!.age.toString()
+                                )
+                                ProfileDetailRow(
+                                    label = "Gender",
+                                    value = userProfileModel!!.gender
+                                )
+                                ProfileDetailRow(
+                                    label = "Phone",
+                                    value = userProfileModel!!.phoneNumber
+                                )
+                                ProfileDetailRow(label = "Email", value = userProfileModel!!.email)
 
                                 Spacer(modifier = Modifier.height(16.dp))
-                                Button(
-                                    onClick = { /* TODO: Navigate to edit profile screen */ },
-                                    modifier = Modifier.fillMaxWidth()
-                                ) { Text("Edit Profile") }
 
                                 OutlinedButton(
-                                    onClick = { showLogoutDialog = true  },
+                                    onClick = { showLogoutDialog = true },
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(top = 8.dp)
                                 ) { Text("Logout") }
                             }
                         }
+
+                        Button(
+                            onClick = {
+                                navigator.push(EditProfileScreen(userProfileModel))
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) { Text("Edit Profile") }
+
+                        OutlinedButton(
+                            onClick = { showLogoutDialog = true },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp)
+                        ) { Text("Logout") }
                     }
 
                     item {
@@ -254,9 +284,17 @@ class ProfileScreen : Screen {
         }
     }
 
-    private suspend fun loadUserProfile(apiService: ApiService): UserProfile? {
+    private suspend fun loadUserProfile(apiService: ApiService): UserProfileModel? {
         return try {
             withContext(Dispatchers.IO) { apiService.getUserProfile() }
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    private suspend fun getUserDetails(apiService: ApiService): UpdateUserProfileModel? {
+        return try {
+            withContext(Dispatchers.IO) { apiService.getUserDetails() }
         } catch (e: Exception) {
             null
         }
