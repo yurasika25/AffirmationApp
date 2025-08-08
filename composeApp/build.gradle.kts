@@ -31,8 +31,9 @@ kotlin {
     sourceSets {
         
         androidMain.dependencies {
+            val voyagerVersion = "1.1.0-beta02"
             implementation("io.ktor:ktor-client-android:2.3.4")
-
+            implementation("cafe.adriel.voyager:voyager-rxjava:${voyagerVersion}")
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation("io.ktor:ktor-client-okhttp:2.3.12")
@@ -40,10 +41,7 @@ kotlin {
 
 
         commonMain.dependencies {
-
-            implementation("cafe.adriel.voyager:voyager-navigator:1.0.1")
-            implementation("cafe.adriel.voyager:voyager-transitions:1.0.0")
-
+            val voyagerVersion = "1.1.0-beta02"
             implementation("io.ktor:ktor-client-logging:2.3.5")
             implementation(libs.kotlinx.serialization.json)
             implementation(compose.runtime)
@@ -63,15 +61,23 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.components.resources)
             implementation(compose.material3)
-            implementation("cafe.adriel.voyager:voyager-navigator:1.1.0-beta02")
-            implementation("cafe.adriel.voyager:voyager-transitions:1.1.0-beta02")
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
 
             implementation("io.ktor:ktor-client-core:2.3.12")
             implementation("io.ktor:ktor-client-content-negotiation:2.3.12")
             implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.12")
 
+            // Navigator
 
+            implementation("cafe.adriel.voyager:voyager-navigator:${voyagerVersion}")
+            implementation("cafe.adriel.voyager:voyager-screenmodel:${voyagerVersion}")
+            implementation("cafe.adriel.voyager:voyager-bottom-sheet-navigator:${voyagerVersion}")
+            implementation("cafe.adriel.voyager:voyager-tab-navigator:${voyagerVersion}")
+            implementation("cafe.adriel.voyager:voyager-transitions:${voyagerVersion}")
+            implementation("cafe.adriel.voyager:voyager-koin:${voyagerVersion}")
+            implementation("cafe.adriel.voyager:voyager-hilt:${voyagerVersion}")
+            implementation("cafe.adriel.voyager:voyager-livedata:${voyagerVersion}")
+            implementation("cafe.adriel.voyager:voyager-kodein:${voyagerVersion}")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
