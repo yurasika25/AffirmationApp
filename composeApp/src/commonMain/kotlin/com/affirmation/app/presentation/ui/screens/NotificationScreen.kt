@@ -1,18 +1,18 @@
 package com.affirmation.app.presentation.ui.screens
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -23,56 +23,69 @@ import com.affirmation.app.data.network.ApiService
 import com.affirmation.app.domain.model.NotificationModel
 import com.affirmation.app.presentation.viewModel.NotificationsViewModel
 import com.affirmation.app.utils.GlobalTopBar
+import kotlin.random.Random
 
 class NotificationScreen : Screen {
+
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-
         val apiService = remember { ApiService(createHttpClient()) }
         val viewModel = remember { NotificationsViewModel(apiService) }
 
-        val data by remember { derivedStateOf { viewModel.data } }
+        val serverData by remember { derivedStateOf { viewModel.data } }
         val isLoading by remember { derivedStateOf { viewModel.isLoading } }
         val errorMessage by remember { derivedStateOf { viewModel.errorMessage } }
 
-        LaunchedEffect(Unit) {
-            viewModel.loadData()
+        val localData by remember {
+            mutableStateOf(fakeNotifications(count = 8))
         }
 
+        val dataToShow = if (serverData.isNotEmpty()) serverData else localData
+
+//        LaunchedEffect(Unit) {
+//            viewModel.loadData() // harmless; UI will show local data until real data arrives
+//        }
+
+        val pageBg = Color(0xFFFAF7FF)
+
         Scaffold(
-            topBar = { GlobalTopBar("Favorites") },
+            containerColor = pageBg,
+            topBar = { GlobalTopBar("Notifications") },
         ) { innerPadding ->
-            Box(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding),
-                contentAlignment = Alignment.Center
+                    .padding(innerPadding)
             ) {
-                when {
-                    isLoading -> CircularProgressIndicator()
-                    errorMessage != null -> {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("Error: $errorMessage", color = Color.Red)
-                            Spacer(Modifier.height(8.dp))
-                            Button(onClick = { viewModel.loadData() }) {
-                                Text("Retry")
-                            }
-                        }
-                    }
+                Text(
+                    text = "Notifications",
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(top = 6.dp, start = 20.dp, end = 20.dp)
+                )
+                Spacer(Modifier.height(6.dp))
+                val newCount = remember(dataToShow) { dataToShow.count { it.isRecent() } }
+                Text(
+                    text = if (newCount > 0) "$newCount new notifications" else "No new notifications",
+                    color = Color(0xFF7D7796),
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 8.dp)
+                )
 
-                    data.isEmpty() -> Text("No favourites yet", color = Color.Gray)
-                    else -> LazyColumn(
-                        contentPadding = PaddingValues(
-                            top = 16.dp,
-                            bottom = 40.dp
-                        ),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        items(data) { notification ->
-                            NotificationCard(notification)
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    when {
+//                        isLoading && serverData.isEmpty() -> CircularProgressIndicator()
+
+                        errorMessage != null && serverData.isEmpty() -> {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text("Showing offline data", color = Color(0xFF7D7796))
+                                Spacer(Modifier.height(8.dp))
+                            }
+                            NotificationList(dataToShow)
                         }
+
+                        else -> NotificationList(dataToShow)
                     }
                 }
             }
@@ -80,39 +93,173 @@ class NotificationScreen : Screen {
     }
 
     @Composable
-    private fun NotificationCard(notification: NotificationModel) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .clip(RoundedCornerShape(12.dp)),
-            elevation = CardDefaults.cardElevation(4.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White)
+    private fun NotificationList(list: List<NotificationModel>) {
+        LazyColumn(
+            contentPadding = PaddingValues(
+                start = 16.dp, end = 16.dp, top = 8.dp, bottom = 24.dp
+            ),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+            modifier = Modifier.fillMaxSize()
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Text(
-                    text = notification.title,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF333333)
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = notification.message,
-                    fontSize = 15.sp,
-                    color = Color(0xFF555555)
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = notification.dateText,
-                    fontSize = 13.sp,
-                    color = Color.Gray
+            items(list) { item ->
+                NotificationCard(
+                    notification = item,
+                    highlighted = item.isRecent(),
+                    onPlay = { /* TODO: play or navigate */ }
                 )
             }
         }
+    }
+
+    @Composable
+    private fun NotificationCard(
+        notification: NotificationModel,
+        highlighted: Boolean,
+        onPlay: () -> Unit
+    ) {
+        val lilac = Color(0xFFB99BF7)
+        val lilacLight = Color(0xFFF0E9FF)
+        val surfaceColor = if (highlighted) lilacLight else Color.White
+        val borderColor = if (highlighted) lilac.copy(alpha = 0.9f) else Color(0x1A000000)
+
+        Surface(
+            color = surfaceColor,
+            shape = RoundedCornerShape(18.dp),
+            tonalElevation = if (highlighted) 0.dp else 1.dp,
+            shadowElevation = if (highlighted) 0.dp else 2.dp,
+            border = BorderStroke(1.dp, borderColor)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.Top
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(52.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(
+                            if (highlighted)
+                                Brush.linearGradient(
+                                    listOf(Color(0xFFE8D9FF), Color(0xFFD9C8FF))
+                                )
+                            else
+                                Brush.linearGradient(
+                                    listOf(Color(0xFFF6F6FA), Color(0xFFEDEDF4))
+                                )
+                        ),
+                    contentAlignment = Alignment.Center
+                ) { Text(if (highlighted) "✨" else "🌙", fontSize = 20.sp) }
+
+                Spacer(Modifier.width(12.dp))
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        notification.title,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color(0xFF2F2A41)
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        notification.message,
+                        color = Color(0xFF6F6A83),
+                        fontSize = 14.sp,
+                        lineHeight = 18.sp
+                    )
+
+                    Spacer(Modifier.height(12.dp))
+                    PlayButton(text = "Play", tint = Color(0xFFB99BF7), onClick = onPlay)
+
+                    Spacer(Modifier.height(10.dp))
+                    Text(notification.dateText, color = Color(0xFF8D89A0), fontSize = 12.sp)
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun PlayButton(
+        text: String,
+        tint: Color,
+        onClick: () -> Unit
+    ) {
+        Surface(
+            color = tint,
+            contentColor = Color.White,
+            shape = RoundedCornerShape(22.dp),
+            modifier = Modifier.height(40.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .defaultMinSize(minWidth = 120.dp)
+                    .padding(horizontal = 16.dp)
+                    .height(40.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(22.dp)
+                        .clip(CircleShape)
+                        .background(Color.White.copy(alpha = 0.18f)),
+                    contentAlignment = Alignment.Center
+                ) { Text("▶", fontSize = 12.sp, color = Color.White) }
+                Spacer(Modifier.width(10.dp))
+                Text(text, fontWeight = FontWeight.Medium, fontSize = 16.sp)
+            }
+        }
+    }
+}
+
+
+private fun NotificationModel.isRecent(): Boolean {
+    val t = dateText.lowercase()
+    return "hour" in t || "min" in t || "just" in t || "new" in t
+}
+
+/** Local fake data to use while the server is not ready. */
+private fun fakeNotifications(count: Int = 80): List<NotificationModel> {
+    val titles = listOf(
+        "Morning Affirmation Ready",
+        "Evening Reflection Time",
+        "You're Building Positive Habits",
+        "Midday Boost",
+        "Gratitude Reminder",
+        "Deep Focus Session",
+        "Confidence Check-in",
+        "Positive Thought Break"
+    )
+    val messages = listOf(
+        "Start your day with positive energy. Your personalized morning affirmation is waiting.",
+        "Wind down with a peaceful affirmation to end your day with gratitude and calm.",
+        "Consistency is key. Your daily practice is creating lasting positive change in your mindset.",
+        "A short affirmation to recharge your afternoon.",
+        "Take a moment to notice three things you're grateful for.",
+        "Breathe in, breathe out—return to the task with clarity.",
+        "Stand tall. You are capable and prepared.",
+        "Pause and repeat a kind word to yourself."
+    )
+    val times = listOf(
+        "Just now",
+        "5 minutes ago",
+        "25 minutes ago",
+        "1 hour ago",
+        "2 hours ago",
+        "6 hours ago",
+        "Yesterday",
+        "1 day ago"
+    )
+
+    return List(count) {
+        val i = Random.nextInt(titles.size)
+        val j = Random.nextInt(messages.size)
+        val k = Random.nextInt(times.size)
+        NotificationModel(
+            title = titles[i],
+            message = messages[j],
+            dateText = times[k],
+            id = 0
+        )
     }
 }

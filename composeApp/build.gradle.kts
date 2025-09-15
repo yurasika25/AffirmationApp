@@ -32,6 +32,7 @@ kotlin {
         
         androidMain.dependencies {
             val voyagerVersion = "1.1.0-beta02"
+            implementation(compose.material)
             implementation("io.ktor:ktor-client-android:2.3.4")
             implementation("cafe.adriel.voyager:voyager-rxjava:${voyagerVersion}")
             implementation(compose.preview)

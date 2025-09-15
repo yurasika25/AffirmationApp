@@ -3,39 +3,29 @@ package com.affirmation.app.presentation.ui.screens
 import affirmationapp.composeapp.generated.resources.Res
 import affirmationapp.composeapp.generated.resources.im_me
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
@@ -49,10 +39,22 @@ import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
+private val LavenderBg = Color(0xFFF5F1FB)
+private val CardScrimTop = Color(0x66000000)
+private val CardScrimBottom = Color(0xCC000000)
+private val ChipBg = Color(0xFFE9E1FF)
+private val Accent = Color(0xFF6A5AE0)
+private val TextSecondary = Color(0xFF6B6B7A)
+
 class HomeScreen : Screen {
 
+    @OptIn(ExperimentalLayoutApi::class)
     @Composable
     override fun Content() {
+
+
+        val focus = LocalFocusManager.current
+        val keyboard = LocalSoftwareKeyboardController.current
         val navigator = LocalNavigator.currentOrThrow
         var showLogoutDialog by remember { mutableStateOf(false) }
 
@@ -62,42 +64,135 @@ class HomeScreen : Screen {
             "$monthName ${currentDateTime.dayOfMonth}, ${currentDateTime.year}"
         }
 
+        val data = items
+        val hero = data.firstOrNull()
+
         Scaffold(
+            containerColor = LavenderBg,
             topBar = {
                 HomeTopBar(
                     username = "Yurii",
-                    date = todayFormatted,
+                    date = "Today is $todayFormatted",
                     onAvatarClick = { showLogoutDialog = true }
                 )
-            }
+            },
         ) { innerPadding ->
+
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
-                contentPadding = PaddingValues(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = 16.dp,
-                    bottom = 60 .dp
-                ),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp)
             ) {
-                items(items) { item ->
-                    HomeItemCard(
-                        icon = item.icon,
-                        title = item.text,
-                        onClick = {
-                            navigator.push(
-                                DetailScreen(
-                                    icon = item.icon,
-                                    title = item.text,
-                                    subtitle = item.subtitle
-                                )
+
+                item {
+                    var q by remember { mutableStateOf("") }
+                    Surface(
+                        color = Color.White,
+                        shape = RoundedCornerShape(18.dp),
+                        tonalElevation = 0.dp,
+                        shadowElevation = 0.dp,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        TextField(
+                            value = q,
+                            onValueChange = { q = it },
+                            placeholder = { Text("Enter keywords to search for") },
+                            singleLine = true,
+                            leadingIcon = { Text("🔎") },
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color.White,
+                                unfocusedContainerColor = Color.White,
+                                disabledContainerColor = Color.White,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent
+                            ),
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                            keyboardActions = KeyboardActions(
+                                onSearch = {
+                                    focus.clearFocus(force = true)
+                                    keyboard?.hide()
+                                }
+                            ),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
+
+                item {
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        listOf("#Self-development", "#Selflove", "#Motivation").forEach { label ->
+                            PillChip(label)
+                        }
+                    }
+                }
+
+                if (hero != null) {
+                    item {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                "Affirmation of the day",
+                                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold)
+                            )
+                            Spacer(Modifier.weight(1f))
+                            Text(
+                                "↻",
+                                color = TextSecondary,
+                                modifier = Modifier
+                                    .clip(CircleShape)
+                                    .clickable { /* TODO refresh */ }
+                                    .padding(8.dp)
                             )
                         }
-                    )
+                    }
+
+                    item {
+                        HeroAffirmationCard(
+                            image = hero.icon,
+                            title = "BELIEVE IN YOURSELF",
+                            tags = listOf("#Self-develop", "#Selflove", "#Motivation"),
+                            onClick = {
+                                navigator.push(
+                                    AffirmationDetailsScreen(
+                                        image = hero.icon,
+                                        bannerTitle = hero.text,
+                                        mainText = hero.subtitle
+                                    )
+                                )
+                            }
+                        )
+                    }
                 }
+
+                if (data.size > 1) {
+                    item {
+                        Text(
+                            "Other affirmations",
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold)
+                        )
+                    }
+
+                    items(data.drop(1)) { item ->
+                        OtherAffirmationCard(image = item.icon, title = item.text, tag = "#Selflove", onClick = {
+                                navigator.push(
+                                    AffirmationDetailsScreen(
+                                        image = item.icon,
+                                        bannerTitle = item.text,
+                                        mainText = item.subtitle
+                                    )
+                                )
+                            })
+                    }
+                }
+
+                item { Spacer(Modifier.height(8.dp)) }
             }
         }
 
@@ -126,15 +221,15 @@ private fun HomeTopBar(
         Column {
             Text(
                 text = "Hi, $username!",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
+                fontSize = 26.sp,
+                fontWeight = FontWeight.SemiBold,
                 color = Color.Black
             )
             Text(
-                text = "Today is $date",
+                text = date,
                 fontSize = 14.sp,
-                color = Color.Gray,
-                modifier = Modifier.padding(top = 8.dp)
+                color = TextSecondary,
+                modifier = Modifier.padding(top = 6.dp)
             )
         }
 
@@ -142,10 +237,10 @@ private fun HomeTopBar(
 
         Card(
             shape = CircleShape,
-            colors = CardDefaults.cardColors(containerColor = Color.Gray),
+            colors = CardDefaults.cardColors(containerColor = Color.LightGray),
             elevation = CardDefaults.cardElevation(0.dp),
             modifier = Modifier
-                .size(63.dp)
+                .size(48.dp)
                 .clickable { onAvatarClick() }
         ) {
             Image(
@@ -158,40 +253,202 @@ private fun HomeTopBar(
 }
 
 @Composable
-private fun HomeItemCard(
-    icon: Any,
+private fun PillChip(text: String) {
+    Surface(color = ChipBg, shape = RoundedCornerShape(16.dp)) {
+        Text(
+            text = text,
+            modifier = Modifier.padding(horizontal = 6.dp, vertical = 6.dp),
+            style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Medium)
+        )
+    }
+}
+
+@Composable
+private fun HeroAffirmationCard(
+    image: DrawableResource,
     title: String,
+    tags: List<String>,
     onClick: () -> Unit
 ) {
-    Card(
+
+
+    val navigator = LocalNavigator.currentOrThrow
+
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() },
-        shape = RoundedCornerShape(34f)
+            .height(220.dp)
+            .clip(RoundedCornerShape(28.dp))
+            .clickable(onClick = onClick)
     ) {
+        Image(
+            painter = painterResource(image),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+
         Box(
+            Modifier
+                .matchParentSize()
+                .background(
+                    Brush.verticalGradient(
+                        0f to CardScrimTop,
+                        0.55f to Color.Transparent,
+                        1f to CardScrimBottom
+                    )
+                )
+        )
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
             modifier = Modifier
-                .height(120.dp)
-                .fillMaxSize()
+                .align(Alignment.TopEnd)
+                .padding(12.dp)
         ) {
-            Image(
-                painter = painterResource(icon as DrawableResource),
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
+            BubbleIcon("▶", onClick = {
+                navigator.push(PlayerScreen(
+                    image = image,
+                    title = title,
+                ))
+            })
+            BubbleIcon("♡") { /* like */ }
+        }
+
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(18.dp)
+        ) {
             Text(
-                text = title,
+                title,
                 color = Color.White,
-                fontSize = 20.sp,
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .padding(8.dp)
+                fontSize = 26.sp,
+                fontWeight = FontWeight.ExtraBold,
+                maxLines = 2
             )
+            Spacer(Modifier.height(10.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("Read more", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                Spacer(Modifier.width(6.dp))
+                Text("→", color = Color.White)
+            }
+            Spacer(Modifier.height(10.dp))
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                tags.forEach { SmallGlassChip(it) }
+            }
         }
     }
 }
 
+@Composable
+private fun OtherAffirmationCard(
+    image: DrawableResource,
+    title: String,
+    tag: String,
+    onClick: () -> Unit,
+) {
+
+    val navigator = LocalNavigator.currentOrThrow
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(130.dp)
+            .clip(RoundedCornerShape(22.dp))
+            .clickable(onClick = onClick)
+    ) {
+        Image(
+            painter = painterResource(image),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+
+        Box(
+            Modifier
+                .matchParentSize()
+                .background(
+                    Brush.verticalGradient(
+                        0f to CardScrimTop.copy(alpha = .35f),
+                        1f to CardScrimBottom.copy(alpha = .55f)
+                    )
+                )
+        )
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(10.dp)
+        ) {
+            BubbleIcon("▶", onClick = {
+                navigator.push(PlayerScreen(
+                    image = image,
+                    title = title,
+                ))
+            })
+
+
+            BubbleIcon("♡") {}
+        }
+
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(14.dp)
+        ) {
+            Text(
+                title,
+                color = Color.White,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(Modifier.height(8.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                SmallGlassChip(tag)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text("Read more", color = Color.White)
+                    Spacer(Modifier.width(6.dp))
+                    Text("→", color = Color.White)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SmallGlassChip(text: String) {
+    Surface(
+        color = Color(0x55FFFFFF),
+        contentColor = Color.White,
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Text(
+            text,
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+            style = MaterialTheme.typography.labelLarge
+        )
+    }
+}
+
+@Composable
+private fun BubbleIcon(label: String, onClick: () -> Unit) {
+    Surface(color = Color(0x33000000), shape = CircleShape) {
+        Box(
+            modifier = Modifier
+                .size(36.dp)
+                .clickable(onClick = onClick),
+            contentAlignment = Alignment.Center
+        ) { Text(label, color = Color.White) }
+    }
+}
 @Composable
 private fun LogoutDialog(
     onConfirm: () -> Unit,
@@ -201,11 +458,7 @@ private fun LogoutDialog(
         onDismissRequest = onDismiss,
         title = { Text("Confirm Logout") },
         text = { Text("Are you sure you want to log out?") },
-        confirmButton = {
-            TextButton(onClick = onConfirm) { Text("Log out") }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancel") }
-        }
+        confirmButton = { TextButton(onClick = onConfirm) { Text("Log out") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } }
     )
 }
