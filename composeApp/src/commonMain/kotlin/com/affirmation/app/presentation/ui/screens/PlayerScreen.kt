@@ -1,21 +1,49 @@
 package com.affirmation.app.presentation.ui.screens
 
+import affirmationapp.composeapp.generated.resources.Res
+import affirmationapp.composeapp.generated.resources.arrow_back
+import affirmationapp.composeapp.generated.resources.heart_outlined
+import affirmationapp.composeapp.generated.resources.player_end_fill
+import affirmationapp.composeapp.generated.resources.player_pause
+import affirmationapp.composeapp.generated.resources.player_play
+import affirmationapp.composeapp.generated.resources.player_start_fill
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -48,7 +76,7 @@ class PlayerScreen(
     override fun Content() {
         val nav = LocalNavigator.currentOrThrow
         val pageBg = Color(0xFFFAF7FF)
-        val accent = Color(0xFFB99BF7)
+        val accent = Color(0xFF9985D0)
 
         val today = remember {
             val dt = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
@@ -155,7 +183,11 @@ class PlayerScreen(
                             Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(formatTime(progress, durationSec), color = accent, fontSize = 12.sp)
+                            Text(
+                                formatTime(progress, durationSec),
+                                color = accent,
+                                fontSize = 12.sp
+                            )
                             Text(formatTime(1f, durationSec), color = accent, fontSize = 12.sp)
                         }
 
@@ -163,14 +195,18 @@ class PlayerScreen(
 
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween,
+                            horizontalArrangement = Arrangement.Center,
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            ControlPill("⏮") { progress = 0f }
+                            ControlPill(painterResource(Res.drawable.player_start_fill)) {
+                                progress = 0f
+                            }
                             PlayButton(isPlaying = isPlaying, tint = accent) {
                                 isPlaying = !isPlaying
                             }
-                            ControlPill("⏭") { progress = 1f }
+                            ControlPill(painterResource(Res.drawable.player_end_fill)) {
+                                progress = 1f
+                            }
                         }
                     }
                 }
@@ -192,11 +228,17 @@ class PlayerScreen(
                     ) {
                         Box(
                             modifier = Modifier
-                                .size(40.dp)
-                                .clip(CircleShape)
-                                .background(Color(0x14B99BF7)),
+                                .size(40.dp),
                             contentAlignment = Alignment.Center
-                        ) { Text("♡", color = Color(0xFFB99BF7), fontSize = 18.sp) }
+                        ) {
+                            Icon(
+                                painter = painterResource(Res.drawable.heart_outlined),
+                                contentDescription = "Purple heart icon",
+                                tint = Color(0xFF9985D0),
+                                modifier = Modifier
+                                    .size(32.dp)
+                            )
+                        }
 
                         Spacer(Modifier.width(12.dp))
                         Text("Add to favorites", fontSize = 16.sp)
@@ -216,7 +258,7 @@ private fun PlayerTopBar(
     onBack: () -> Unit,
     onShare: () -> Unit
 ) {
-    Column(Modifier.fillMaxWidth().padding(top = 8.dp)) {
+    Column(Modifier.fillMaxWidth().padding(top = 16.dp)) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -224,22 +266,21 @@ private fun PlayerTopBar(
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp)
         ) {
-            Text("←",
+            Icon(
+                painter = painterResource(Res.drawable.arrow_back),
+                contentDescription = "Arrow back icon",
+                tint = Color(0xFF9985D0),
                 modifier = Modifier
-                    .clip(CircleShape)
-                    .clickable(onClick = onBack)
-                    .padding(10.dp),
-                color = Color(0xFF6A5AE0),
-                fontSize = 18.sp
+                    .size(32.dp)
             )
-            Text("🔗",
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .clickable(onClick = onShare)
-                    .padding(10.dp),
-                color = Color(0xFF6A5AE0),
-                fontSize = 18.sp
-            )
+//            Text("🔗",
+//                modifier = Modifier
+//                    .clip(CircleShape)
+//                    .clickable(onClick = onShare)
+//                    .padding(10.dp),
+//                color = Color(0xFF6A5AE0),
+//                fontSize = 18.sp
+//            )
         }
         Spacer(Modifier.height(8.dp))
         Column(Modifier.padding(horizontal = 16.dp)) {
@@ -262,16 +303,14 @@ private fun Chip(text: String) {
 }
 
 @Composable
-private fun ControlPill(glyph: String, onClick: () -> Unit) {
-    Text(
-        glyph,
-        color = Color(0xFF8B79DA),
-        fontSize = 28.sp,
+private fun ControlPill(icon: Painter, onClick: () -> Unit) {
+    Icon(
+        painter = icon,
+        contentDescription = null,
+        tint = Color(0xFF9985D0),
         modifier = Modifier
-            .padding(end = 30.dp)
-            .padding(start = 30.dp)
-            .clip(CircleShape)
-            .padding(vertical = 8.dp)
+            .padding(horizontal = 16.dp)
+            .size(48.dp)
             .clickable(onClick = onClick)
     )
 }
@@ -283,11 +322,25 @@ private fun PlayButton(isPlaying: Boolean, tint: Color, onClick: () -> Unit) {
         contentColor = Color.White,
         shape = CircleShape,
         modifier = Modifier
-            .size(76.dp)
+            .size(60.dp)
             .clickable(onClick = onClick)
     ) {
         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-            Text(if (isPlaying) "⏸" else "▶", fontSize = 28.sp)
+            if (isPlaying) {
+                Icon(
+                    painter = painterResource(Res.drawable.player_pause),
+                    contentDescription = "Arrow back icon",
+                    modifier = Modifier
+                        .size(48.dp)
+                )
+            } else {
+                Icon(
+                    painter = painterResource(Res.drawable.player_play),
+                    contentDescription = "Arrow back icon",
+                    modifier = Modifier
+                        .size(48.dp)
+                )
+            }
         }
     }
 }
