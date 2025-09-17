@@ -2,7 +2,7 @@ package com.affirmation.app.presentation.ui.screens
 
 import affirmationapp.composeapp.generated.resources.Res
 import affirmationapp.composeapp.generated.resources.arrow_back
-import affirmationapp.composeapp.generated.resources.heart_outlined
+import affirmationapp.composeapp.generated.resources.heart_outline
 import affirmationapp.composeapp.generated.resources.player_end_fill
 import affirmationapp.composeapp.generated.resources.player_pause
 import affirmationapp.composeapp.generated.resources.player_play
@@ -232,7 +232,7 @@ class PlayerScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
-                                painter = painterResource(Res.drawable.heart_outlined),
+                                painter = painterResource(Res.drawable.heart_outline),
                                 contentDescription = "Purple heart icon",
                                 tint = Color(0xFF9985D0),
                                 modifier = Modifier

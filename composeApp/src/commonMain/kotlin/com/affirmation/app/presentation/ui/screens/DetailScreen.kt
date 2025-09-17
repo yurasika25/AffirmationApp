@@ -2,7 +2,7 @@ package com.affirmation.app.presentation.ui.screens
 
 import affirmationapp.composeapp.generated.resources.Res
 import affirmationapp.composeapp.generated.resources.arrow_back
-import affirmationapp.composeapp.generated.resources.heart_outlined
+import affirmationapp.composeapp.generated.resources.heart_outline
 import affirmationapp.composeapp.generated.resources.play_filled
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -41,8 +41,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import com.affirmation.app.utils.items
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
@@ -216,7 +214,7 @@ class AffirmationDetailsScreen(
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Icon(
-                                        painter = painterResource(Res.drawable.heart_outlined),
+                                        painter = painterResource(Res.drawable.heart_outline),
                                         contentDescription = "Purple heart icon",
                                         tint = Color(0xFF9985D0),
                                         modifier = Modifier

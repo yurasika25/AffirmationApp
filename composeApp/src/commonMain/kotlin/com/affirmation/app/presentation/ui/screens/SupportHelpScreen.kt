@@ -2,15 +2,42 @@ package com.affirmation.app.presentation.ui.screens
 
 import affirmationapp.composeapp.generated.resources.Res
 import affirmationapp.composeapp.generated.resources.arrow_back
+import affirmationapp.composeapp.generated.resources.done_circle_red_heart
+import affirmationapp.composeapp.generated.resources.paper_clip_attach
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,18 +46,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.ui.text.input.ImeAction
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -247,12 +273,19 @@ private fun ThankYouForSupport(
         Box(contentAlignment = Alignment.TopEnd) {
             Box(
                 modifier = Modifier
-                    .size(96.dp)
-                    .clip(CircleShape)
-                    .background(Color(0x2234C759)),
+                    .size(98.dp),
                 contentAlignment = Alignment.Center
-            ) { Text("✅", fontSize = 44.sp) }
-            Text("❤", modifier = Modifier.padding(top = 4.dp, end = 2.dp))
+            ) {
+                Image(
+                    painter = painterResource(Res.drawable.done_circle_red_heart),
+                    contentDescription = "Done circle icon",
+                    modifier = Modifier
+                        .height(98.dp)
+                        .width(90.dp),
+                    contentScale = ContentScale.Fit
+                )
+            }
+
         }
 
         Spacer(Modifier.height(16.dp))
@@ -287,7 +320,10 @@ private fun ThankYouForSupport(
         Button(
             onClick = onAutoBack,
             shape = RoundedCornerShape(18.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = accent, contentColor = Color.White),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = accent,
+                contentColor = Color.White
+            ),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
@@ -331,7 +367,10 @@ private fun AttachmentDropZone(
                 drawRoundRect(
                     color = borderColor,
                     size = size,
-                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(radius.toPx(), radius.toPx()),
+                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(
+                        radius.toPx(),
+                        radius.toPx()
+                    ),
                     style = Stroke(
                         width = 2.dp.toPx(),
                         pathEffect = PathEffect.dashPathEffect(floatArrayOf(dash, dash), 0f)
@@ -342,7 +381,13 @@ private fun AttachmentDropZone(
         contentAlignment = Alignment.Center
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("📎")
+            Icon(
+                painter = painterResource(Res.drawable.paper_clip_attach),
+                contentDescription = "Arrow back icon",
+                tint = Color(0xFF5B5B5B),
+                modifier = Modifier
+                    .size(16.dp)
+            )
             Spacer(Modifier.width(8.dp))
             Text(hint, color = Color(0xFF7D7796))
         }
