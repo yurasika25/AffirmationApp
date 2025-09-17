@@ -258,6 +258,8 @@ private fun PlayerTopBar(
     onBack: () -> Unit,
     onShare: () -> Unit
 ) {
+    val nav = LocalNavigator.currentOrThrow
+
     Column(Modifier.fillMaxWidth().padding(top = 16.dp)) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -272,6 +274,9 @@ private fun PlayerTopBar(
                 tint = Color(0xFF9985D0),
                 modifier = Modifier
                     .size(32.dp)
+                    .clickable {
+                        nav.pop()
+                    }
             )
 //            Text("🔗",
 //                modifier = Modifier
