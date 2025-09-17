@@ -76,7 +76,6 @@ private val LavenderBg = Color(0xFFF5F1FB)
 private val CardScrimTop = Color(0x66000000)
 private val CardScrimBottom = Color(0xCC000000)
 private val ChipBg = Color(0xFFE9E1FF)
-private val Accent = Color(0xFF6A5AE0)
 private val TextSecondary = Color(0xFF6B6B7A)
 
 class HomeScreen : Screen {
@@ -105,7 +104,7 @@ class HomeScreen : Screen {
             containerColor = LavenderBg,
             topBar = {
                 HomeTopBar(
-                    username = "Yurii",
+                    username = "Dev",
                     date = "Today is $todayFormatted",
                     onAvatarClick = { showLogoutDialog = true }
                 )

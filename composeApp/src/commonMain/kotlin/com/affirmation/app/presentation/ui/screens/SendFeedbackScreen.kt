@@ -165,7 +165,7 @@ class SendFeedbackScreen(
                     Spacer(Modifier.height(8.dp))
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                         val counter = buildAnnotatedString {
-                            withStyle(SpanStyle(color = Color(0xFF9090A5))) { append("${count}") }
+                            withStyle(SpanStyle(color = Color(0xFF9090A5))) { append("$count") }
                             append("/")
                             withStyle(SpanStyle(color = Color(0xFFB0A9C5))) { append(maxChars.toString()) }
                         }

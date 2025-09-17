@@ -33,7 +33,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -97,8 +99,8 @@ class ProfileScreen(
 
                 item {
                     ProfileHeaderCard(
-                        name = "Oksana",
-                        email = "oksana@gmail.com",
+                        name = "Dev",
+                        email = "dev@gmail.com",
                         bio = "I love traveling, books, and morning coffee. I strive to become a better version of myself every day.",
                         daysActive = 127,
                         readCount = 342,
@@ -117,14 +119,22 @@ class ProfileScreen(
                             checked = pushEnabled,
                             onCheckedChange = { pushEnabled = it }
                         )
-                        Divider(color = Color(0x1A000000))
+                        HorizontalDivider(
+                            Modifier,
+                            DividerDefaults.Thickness,
+                            color = Color(0x1A000000)
+                        )
                         SettingNavRow(
                             icon = painterResource(Res.drawable.palette_outline),
                             title = "Theme",
                             subtitle = "App appearance.",
                             onClick = { /* TODO */ }
                         )
-                        Divider(color = Color(0x1A000000))
+                        HorizontalDivider(
+                            Modifier,
+                            DividerDefaults.Thickness,
+                            color = Color(0x1A000000)
+                        )
                         SettingNavRow(
                             icon = painterResource(Res.drawable.language),
                             title = "Language",
@@ -143,7 +153,11 @@ class ProfileScreen(
                             subtitle = "Describe your problem to us and we will help you solve it.",
                             onClick = { navigator.push(SupportHelpScreen()) }
                         )
-                        Divider(color = Color(0x1A000000))
+                        HorizontalDivider(
+                            Modifier,
+                            DividerDefaults.Thickness,
+                            color = Color(0x1A000000)
+                        )
                         SettingNavRow(
                             icon = painterResource(Res.drawable.feedback),
                             title = "Send Feedback",
@@ -222,7 +236,6 @@ class ProfileScreen(
     }
 }
 
-/* ---------------------- Dialog ---------------------- */
 
 @Composable
 private fun ConfirmExitDialog(
@@ -264,7 +277,7 @@ private fun ConfirmExitDialog(
                 )
 
                 Spacer(Modifier.height(14.dp))
-                Divider(color = Color(0x14000000))
+                HorizontalDivider(Modifier, DividerDefaults.Thickness, color = Color(0x14000000))
 
                 Row(
                     modifier = Modifier
@@ -366,7 +379,7 @@ private fun ProfileHeaderCard(
             }
 
             Spacer(Modifier.height(12.dp))
-            Divider(color = Color(0x1A000000))
+            HorizontalDivider(Modifier, DividerDefaults.Thickness, Color(0x1A000000))
             Spacer(Modifier.height(8.dp))
 
             Row(

@@ -63,7 +63,7 @@ class NotificationScreen : Screen {
             mutableStateOf(fakeNotifications(count = 8))
         }
 
-        val dataToShow = if (serverData.isNotEmpty()) serverData else localData
+        val dataToShow = serverData.ifEmpty { localData }
 
 //        LaunchedEffect(Unit) {
 //            viewModel.loadData() // harmless; UI will show local data until real data arrives

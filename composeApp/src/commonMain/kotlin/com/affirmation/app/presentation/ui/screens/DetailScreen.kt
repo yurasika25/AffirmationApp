@@ -59,7 +59,6 @@ class AffirmationDetailsScreen(
     @OptIn(ExperimentalLayoutApi::class)
     @Composable
     override fun Content() {
-        val nav = LocalNavigator.currentOrThrow
         val pageBg = Color(0xFFFAF7FF)
         val accent = Color(0xFFB99BF7)
 
