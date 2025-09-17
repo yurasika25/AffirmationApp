@@ -1,5 +1,7 @@
 package com.affirmation.app.presentation.ui.screens
 
+import affirmationapp.composeapp.generated.resources.Res
+import affirmationapp.composeapp.generated.resources.arrow_back
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -30,6 +32,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import kotlinx.coroutines.delay
+import org.jetbrains.compose.resources.painterResource
 
 class SendFeedbackScreen(
     private val onSubmit: (rating: Int, message: String) -> Unit = { _, _ -> },
@@ -77,19 +80,18 @@ class SendFeedbackScreen(
                             })
                         }
                 ) {
-                    Text(
-                        text = "←",
-                        color = lilac,
-                        fontSize = 20.sp,
+
+                    Icon(
+                        painter = painterResource(Res.drawable.arrow_back),
+                        contentDescription = "Arrow back icon",
+                        tint = Color(0xFF9985D0),
                         modifier = Modifier
-                            .padding(top = 8.dp)
-                            .clip(CircleShape)
+                            .size(32.dp)
                             .clickable {
                                 focus.clearFocus(force = true)
                                 keyboard?.hide()
                                 nav.pop()
                             }
-                            .padding(8.dp)
                     )
 
                     Spacer(Modifier.height(6.dp))

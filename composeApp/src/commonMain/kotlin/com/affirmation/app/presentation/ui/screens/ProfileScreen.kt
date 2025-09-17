@@ -1,24 +1,54 @@
 package com.affirmation.app.presentation.ui.screens
 
 import affirmationapp.composeapp.generated.resources.Res
+import affirmationapp.composeapp.generated.resources.arrow_filled
+import affirmationapp.composeapp.generated.resources.edit_filled
+import affirmationapp.composeapp.generated.resources.exit
+import affirmationapp.composeapp.generated.resources.feedback
+import affirmationapp.composeapp.generated.resources.help_outline
 import affirmationapp.composeapp.generated.resources.im_me
+import affirmationapp.composeapp.generated.resources.language
+import affirmationapp.composeapp.generated.resources.notification_bell
+import affirmationapp.composeapp.generated.resources.palette_outline
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.*
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -56,7 +86,12 @@ class ProfileScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
-                contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 28.dp),
+                contentPadding = PaddingValues(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = 12.dp,
+                    bottom = 28.dp
+                ),
                 verticalArrangement = Arrangement.spacedBy(14.dp)
             ) {
 
@@ -76,7 +111,7 @@ class ProfileScreen(
                 item {
                     SectionCard {
                         SettingToggleRow(
-                            leadingGlyph = "🔔",
+                            icon = painterResource(Res.drawable.notification_bell),
                             title = "Push Notifications",
                             subtitle = "Daily reminder for affirmations.",
                             checked = pushEnabled,
@@ -84,14 +119,14 @@ class ProfileScreen(
                         )
                         Divider(color = Color(0x1A000000))
                         SettingNavRow(
-                            leadingGlyph = "🎨",
+                            icon = painterResource(Res.drawable.palette_outline),
                             title = "Theme",
                             subtitle = "App appearance.",
                             onClick = { /* TODO */ }
                         )
                         Divider(color = Color(0x1A000000))
                         SettingNavRow(
-                            leadingGlyph = "🌐",
+                            icon = painterResource(Res.drawable.language),
                             title = "Language",
                             subtitle = "App language.",
                             onClick = { /* TODO */ }
@@ -103,14 +138,14 @@ class ProfileScreen(
                 item {
                     SectionCard {
                         SettingNavRow(
-                            leadingGlyph = "🆘",
+                            icon = painterResource(Res.drawable.help_outline),
                             title = "Help&Support",
                             subtitle = "Describe your problem to us and we will help you solve it.",
                             onClick = { navigator.push(SupportHelpScreen()) }
                         )
                         Divider(color = Color(0x1A000000))
                         SettingNavRow(
-                            leadingGlyph = "✉️",
+                            icon = painterResource(Res.drawable.feedback),
                             title = "Send Feedback",
                             subtitle = "Write us your opinion so that we can improve.",
                             onClick = { navigator.push(SendFeedbackScreen()) }
@@ -135,16 +170,22 @@ class ProfileScreen(
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .size(40.dp)
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .background(Color(0x14FF3B30)),
+                                    .size(40.dp),
                                 contentAlignment = Alignment.Center
-                            ) { Text("🚪", fontSize = 18.sp) }
+                            ) {
+                                Icon(
+                                    painter = painterResource(Res.drawable.exit),
+                                    contentDescription = "Arrow back icon",
+                                    tint = Color(0xFFFF0000),
+                                    modifier = Modifier
+                                        .size(32.dp)
+                                )
+                            }
 
                             Spacer(Modifier.width(12.dp))
                             Text(
                                 "Sign Out",
-                                color = Color(0xFFFF3B30),
+                                color = Color(0xFFFF0000),
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.SemiBold
                             )
@@ -302,7 +343,13 @@ private fun ProfileHeaderCard(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(name, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
                         Spacer(Modifier.width(6.dp))
-                        Text("✏️", fontSize = 14.sp)
+                        Icon(
+                            painter = painterResource(Res.drawable.edit_filled),
+                            contentDescription = "Edit icon",
+                            tint = Color(0xFF9985D0),
+                            modifier = Modifier
+                                .size(16.dp)
+                        )
                     }
                     Spacer(Modifier.height(8.dp))
                     Text(
@@ -336,7 +383,10 @@ private fun ProfileHeaderCard(
 
 @Composable
 private fun StatItem(title: String, value: String, accent: Color) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth(0.25f)) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth(0.25f)
+    ) {
         Text(value, color = accent, fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
         Spacer(Modifier.height(4.dp))
         Text(title, color = Color(0xFF8D89A0), fontSize = 12.sp, lineHeight = 14.sp)
@@ -370,7 +420,7 @@ private fun SectionCard(content: @Composable ColumnScope.() -> Unit) {
 
 @Composable
 private fun SettingToggleRow(
-    leadingGlyph: String,
+    icon: Painter,
     title: String,
     subtitle: String,
     checked: Boolean,
@@ -382,7 +432,7 @@ private fun SettingToggleRow(
             .padding(vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconTile(leadingGlyph)
+        IconTile(icon)
         Spacer(Modifier.width(10.dp))
         Column(Modifier.weight(1f)) {
             Text(title, fontWeight = FontWeight.Medium, fontSize = 16.sp)
@@ -395,7 +445,7 @@ private fun SettingToggleRow(
 
 @Composable
 private fun SettingNavRow(
-    leadingGlyph: String,
+    icon: Painter,
     title: String,
     subtitle: String,
     onClick: () -> Unit
@@ -407,24 +457,36 @@ private fun SettingNavRow(
             .padding(vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconTile(leadingGlyph)
+        IconTile(icon)
         Spacer(Modifier.width(10.dp))
         Column(Modifier.weight(1f)) {
             Text(title, fontWeight = FontWeight.Medium, fontSize = 16.sp)
             Spacer(Modifier.height(2.dp))
             Text(subtitle, color = Color(0xFF8D89A0), fontSize = 13.sp)
         }
-        Text("›", color = Color(0xFF8D89A0), fontSize = 20.sp)
+        Icon(
+            painter = painterResource(Res.drawable.arrow_filled),
+            tint = Color(0xFF9985D0),
+            contentDescription = null,
+            modifier = Modifier
+                .height(24.dp).width(12.dp)
+        )
     }
 }
 
 @Composable
-private fun IconTile(glyph: String) {
+private fun IconTile(icon: Painter) {
     Box(
         modifier = Modifier
-            .size(40.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .background(Color(0xFFF4EEFF)),
+            .size(40.dp),
         contentAlignment = Alignment.Center
-    ) { Text(glyph, fontSize = 18.sp) }
+    ) {
+        Icon(
+            painter = icon,
+            tint = Color(0xFF9985D0),
+            contentDescription = null,
+//        modifier = Modifier
+//            .size(48.dp)
+        )
+    }
 }

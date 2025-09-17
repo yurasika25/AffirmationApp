@@ -1,25 +1,58 @@
 package com.affirmation.app.presentation.ui.screens
 
 import affirmationapp.composeapp.generated.resources.Res
+import affirmationapp.composeapp.generated.resources.arrow_up
 import affirmationapp.composeapp.generated.resources.im_me
+import affirmationapp.composeapp.generated.resources.like
+import affirmationapp.composeapp.generated.resources.play
+import affirmationapp.composeapp.generated.resources.refresh
+import affirmationapp.composeapp.generated.resources.search
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -59,7 +92,8 @@ class HomeScreen : Screen {
         var showLogoutDialog by remember { mutableStateOf(false) }
 
         val todayFormatted = remember {
-            val currentDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+            val currentDateTime =
+                Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
             val monthName = monthNames[currentDateTime.monthNumber - 1]
             "$monthName ${currentDateTime.dayOfMonth}, ${currentDateTime.year}"
         }
@@ -100,7 +134,13 @@ class HomeScreen : Screen {
                             onValueChange = { q = it },
                             placeholder = { Text("Enter keywords to search for") },
                             singleLine = true,
-                            leadingIcon = { Text("🔎") },
+                            leadingIcon = {
+                                Icon(
+                                    painter = painterResource(Res.drawable.search),
+                                    contentDescription = "Search icon",
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            },
                             colors = TextFieldDefaults.colors(
                                 focusedContainerColor = Color.White,
                                 unfocusedContainerColor = Color.White,
@@ -142,13 +182,13 @@ class HomeScreen : Screen {
                                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold)
                             )
                             Spacer(Modifier.weight(1f))
-                            Text(
-                                "↻",
-                                color = TextSecondary,
+                            Icon(
+                                painter = painterResource(Res.drawable.refresh),
+                                contentDescription = "Refresh icon",
                                 modifier = Modifier
-                                    .clip(CircleShape)
+                                    .padding(end = 11.dp)
+                                    .size(16.dp)
                                     .clickable { /* TODO refresh */ }
-                                    .padding(8.dp)
                             )
                         }
                     }
@@ -180,7 +220,11 @@ class HomeScreen : Screen {
                     }
 
                     items(data.drop(1)) { item ->
-                        OtherAffirmationCard(image = item.icon, title = item.text, tag = "#Selflove", onClick = {
+                        OtherAffirmationCard(
+                            image = item.icon,
+                            title = item.text,
+                            tag = "#Selflove",
+                            onClick = {
                                 navigator.push(
                                     AffirmationDetailsScreen(
                                         image = item.icon,
@@ -306,13 +350,15 @@ private fun HeroAffirmationCard(
                 .align(Alignment.TopEnd)
                 .padding(12.dp)
         ) {
-            BubbleIcon("▶", onClick = {
-                navigator.push(PlayerScreen(
-                    image = image,
-                    title = title,
-                ))
+            BubbleIcon(painterResource(Res.drawable.play), onClick = {
+                navigator.push(
+                    PlayerScreen(
+                        image = image,
+                        title = title,
+                    )
+                )
             })
-            BubbleIcon("♡") { /* like */ }
+            BubbleIcon(painterResource(Res.drawable.like)) { /* like */ }
         }
 
         Column(
@@ -329,9 +375,19 @@ private fun HeroAffirmationCard(
             )
             Spacer(Modifier.height(10.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Read more", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                Text(
+                    "Read more",
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
+                )
                 Spacer(Modifier.width(6.dp))
-                Text("→", color = Color.White)
+                Icon(
+                    painter = painterResource(Res.drawable.arrow_up),
+                    contentDescription = "Arrow-up icon",
+                    modifier = Modifier.size(20.dp),
+                    tint = Color.White
+                )
             }
             Spacer(Modifier.height(10.dp))
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -382,15 +438,17 @@ private fun OtherAffirmationCard(
                 .align(Alignment.TopEnd)
                 .padding(10.dp)
         ) {
-            BubbleIcon("▶", onClick = {
-                navigator.push(PlayerScreen(
-                    image = image,
-                    title = title,
-                ))
+            BubbleIcon(painterResource(Res.drawable.play), onClick = {
+                navigator.push(
+                    PlayerScreen(
+                        image = image,
+                        title = title,
+                    )
+                )
             })
 
 
-            BubbleIcon("♡") {}
+            BubbleIcon(painterResource(Res.drawable.like)) {}
         }
 
         Column(
@@ -416,7 +474,12 @@ private fun OtherAffirmationCard(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text("Read more", color = Color.White)
                     Spacer(Modifier.width(6.dp))
-                    Text("→", color = Color.White)
+                    Icon(
+                        painter = painterResource(Res.drawable.arrow_up),
+                        contentDescription = "Arrow-up icon",
+                        modifier = Modifier.size(20.dp),
+                        tint = Color.White
+                    )
                 }
             }
         }
@@ -439,16 +502,26 @@ private fun SmallGlassChip(text: String) {
 }
 
 @Composable
-private fun BubbleIcon(label: String, onClick: () -> Unit) {
-    Surface(color = Color(0x33000000), shape = CircleShape) {
+private fun BubbleIcon(icon: Painter, onClick: () -> Unit) {
+    Surface(
+        color = Color(0x33000000),
+        shape = CircleShape
+    ) {
         Box(
             modifier = Modifier
                 .size(36.dp)
                 .clickable(onClick = onClick),
             contentAlignment = Alignment.Center
-        ) { Text(label, color = Color.White) }
+        ) {
+            Icon(
+                painter = icon,
+                contentDescription = null,
+                tint = Color.White
+            )
+        }
     }
 }
+
 @Composable
 private fun LogoutDialog(
     onConfirm: () -> Unit,
