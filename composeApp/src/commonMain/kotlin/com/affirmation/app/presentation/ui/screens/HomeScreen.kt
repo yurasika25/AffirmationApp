@@ -1,12 +1,7 @@
 package com.affirmation.app.presentation.ui.screens
 
 import affirmationapp.composeapp.generated.resources.Res
-import affirmationapp.composeapp.generated.resources.arrow_up
-import affirmationapp.composeapp.generated.resources.im_me
-import affirmationapp.composeapp.generated.resources.like
-import affirmationapp.composeapp.generated.resources.play
-import affirmationapp.composeapp.generated.resources.refresh
-import affirmationapp.composeapp.generated.resources.search
+import affirmationapp.composeapp.generated.resources.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -287,7 +282,7 @@ private fun HomeTopBar(
                 .clickable { onAvatarClick() }
         ) {
             Image(
-                painter = painterResource(Res.drawable.im_me),
+                painter = painterResource(Res.drawable.im_avatar),
                 contentDescription = "Avatar",
                 contentScale = ContentScale.Crop
             )

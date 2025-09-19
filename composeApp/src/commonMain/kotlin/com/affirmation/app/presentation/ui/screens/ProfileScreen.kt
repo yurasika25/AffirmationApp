@@ -1,15 +1,7 @@
 package com.affirmation.app.presentation.ui.screens
 
 import affirmationapp.composeapp.generated.resources.Res
-import affirmationapp.composeapp.generated.resources.arrow_filled
-import affirmationapp.composeapp.generated.resources.edit_filled
-import affirmationapp.composeapp.generated.resources.exit
-import affirmationapp.composeapp.generated.resources.feedback
-import affirmationapp.composeapp.generated.resources.help_outline
-import affirmationapp.composeapp.generated.resources.im_me
-import affirmationapp.composeapp.generated.resources.language
-import affirmationapp.composeapp.generated.resources.notification_bell
-import affirmationapp.composeapp.generated.resources.palette_outline
+import affirmationapp.composeapp.generated.resources.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -362,7 +354,7 @@ private fun ProfileHeaderCard(
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
-                        painter = painterResource(Res.drawable.im_me),
+                        painter = painterResource(Res.drawable.im_avatar),
                         contentDescription = "avatar",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()
