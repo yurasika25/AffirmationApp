@@ -74,7 +74,7 @@ class PlayerScreen(
     @OptIn(ExperimentalLayoutApi::class)
     @Composable
     override fun Content() {
-        val nav = LocalNavigator.currentOrThrow
+        val navigator = LocalNavigator.currentOrThrow
         val pageBg = Color(0xFFFAF7FF)
         val accent = Color(0xFF9985D0)
 
@@ -100,7 +100,7 @@ class PlayerScreen(
                 PlayerTopBar(
                     title = "Affirmation Player",
                     date = today,
-                    onBack = { nav.pop() },
+                    onBack = { navigator.pop() },
                     onShare = { /* TODO: share */ }
                 )
             }
@@ -258,7 +258,6 @@ private fun PlayerTopBar(
     onBack: () -> Unit,
     onShare: () -> Unit
 ) {
-    val nav = LocalNavigator.currentOrThrow
 
     Column(Modifier.fillMaxWidth().padding(top = 16.dp)) {
         Row(
@@ -275,17 +274,9 @@ private fun PlayerTopBar(
                 modifier = Modifier
                     .size(32.dp)
                     .clickable {
-                        nav.pop()
+                        onBack()
                     }
             )
-//            Text("🔗",
-//                modifier = Modifier
-//                    .clip(CircleShape)
-//                    .clickable(onClick = onShare)
-//                    .padding(10.dp),
-//                color = Color(0xFF6A5AE0),
-//                fontSize = 18.sp
-//            )
         }
         Spacer(Modifier.height(8.dp))
         Column(Modifier.padding(horizontal = 16.dp)) {

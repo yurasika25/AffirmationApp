@@ -67,7 +67,7 @@ class SendFeedbackScreen(
 
     @Composable
     override fun Content() {
-        val nav = LocalNavigator.currentOrThrow
+        val navigator = LocalNavigator.currentOrThrow
 
         val bg = Color(0xFFFAF7FF)
         val lilac = Color(0xFF9B87E0)
@@ -116,7 +116,7 @@ class SendFeedbackScreen(
                             .clickable {
                                 focus.clearFocus(force = true)
                                 keyboard?.hide()
-                                nav.pop()
+                                navigator.pop()
                             }
                     )
 
@@ -240,7 +240,7 @@ class SendFeedbackScreen(
                 rating = rating,
                 accent = lilac,
                 autoReturnMs = autoReturnMs,
-                onAutoBack = { nav.pop() }
+                onAutoBack = { navigator.pop() }
             )
         }
     }

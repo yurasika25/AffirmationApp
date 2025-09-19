@@ -4,6 +4,7 @@ import affirmationapp.composeapp.generated.resources.Res
 import affirmationapp.composeapp.generated.resources.play_filled
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,11 +40,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.affirmation.app.createHttpClient
 import com.affirmation.app.data.network.ApiService
 import com.affirmation.app.domain.model.NotificationModel
 import com.affirmation.app.presentation.viewModel.NotificationsViewModel
 import com.affirmation.app.utils.GlobalTopBar
+import com.affirmation.app.utils.items
 import org.jetbrains.compose.resources.painterResource
 import kotlin.random.Random
 
@@ -62,6 +66,8 @@ class NotificationScreen : Screen {
         val localData by remember {
             mutableStateOf(fakeNotifications(count = 8))
         }
+
+        val navigator = LocalNavigator.currentOrThrow
 
         val dataToShow = serverData.ifEmpty { localData }
 
@@ -104,10 +110,30 @@ class NotificationScreen : Screen {
                                 Text("Showing offline data", color = Color(0xFF7D7796))
                                 Spacer(Modifier.height(8.dp))
                             }
-                            NotificationList(dataToShow)
+                            NotificationList(
+                                dataToShow,
+                                onPlay = {
+                                    navigator.push(
+                                        PlayerScreen(
+                                            image = items[0].icon,
+                                            title = items[0].text,
+                                        )
+                                    )
+                                },
+                            )
                         }
 
-                        else -> NotificationList(dataToShow)
+                        else -> NotificationList(
+                            dataToShow,
+                            onPlay = {
+                                navigator.push(
+                                    PlayerScreen(
+                                        image = items[0].icon,
+                                        title = items[0].text,
+                                    )
+                                )
+                            },
+                        )
                     }
                 }
             }
@@ -115,7 +141,7 @@ class NotificationScreen : Screen {
     }
 
     @Composable
-    private fun NotificationList(list: List<NotificationModel>) {
+    private fun NotificationList(list: List<NotificationModel>, onPlay: () -> Unit) {
         LazyColumn(
             contentPadding = PaddingValues(
                 start = 16.dp, end = 16.dp, top = 8.dp, bottom = 24.dp
@@ -127,7 +153,9 @@ class NotificationScreen : Screen {
                 NotificationCard(
                     notification = item,
                     highlighted = item.isRecent(),
-                    onPlay = { /* TODO: play or navigate */ }
+                    onPlay = {
+                        onPlay()
+                    }
                 )
             }
         }
@@ -192,7 +220,7 @@ class NotificationScreen : Screen {
                     )
 
                     Spacer(Modifier.height(12.dp))
-                    PlayButton(text = "Play", tint = Color(0xFFB99BF7), onClick = onPlay)
+                    NotificationPlayButton(text = "Play", tint = Color(0xFFB99BF7), onClick = { onPlay() })
 
                     Spacer(Modifier.height(10.dp))
                     Text(notification.dateText, color = Color(0xFF8D89A0), fontSize = 12.sp)
@@ -202,7 +230,7 @@ class NotificationScreen : Screen {
     }
 
     @Composable
-    private fun PlayButton(
+    fun NotificationPlayButton(
         text: String,
         tint: Color,
         onClick: () -> Unit
@@ -211,7 +239,7 @@ class NotificationScreen : Screen {
             color = tint,
             contentColor = Color.White,
             shape = RoundedCornerShape(22.dp),
-            modifier = Modifier.height(40.dp)
+            modifier = Modifier.height(40.dp).clickable { onClick() }
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,

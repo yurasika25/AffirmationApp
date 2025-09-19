@@ -41,6 +41,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.affirmation.app.utils.items
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
@@ -59,6 +61,7 @@ class AffirmationDetailsScreen(
     override fun Content() {
         val pageBg = Color(0xFFFAF7FF)
         val accent = Color(0xFFB99BF7)
+        val navigator = LocalNavigator.currentOrThrow
 
         Scaffold(containerColor = pageBg) { inner ->
             Column(
@@ -73,7 +76,9 @@ class AffirmationDetailsScreen(
                     contentDescription = "Arrow back icon",
                     tint = Color(0xFF9985D0),
                     modifier = Modifier
-                        .size(32.dp)
+                        .size(32.dp).clickable {
+                            navigator.pop()
+                        }
                 )
                 Spacer(Modifier.height(8.dp))
 
@@ -165,7 +170,14 @@ class AffirmationDetailsScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(52.dp)
-                                .clickable { /* TODO: play */ }
+                                .clickable {
+                                    navigator.push(
+                                        PlayerScreen(
+                                            image = items[0].icon,
+                                            title = items[0].text,
+                                        )
+                                    )
+                                    println("Affirmation Details: Content: affirmation playing")}
                         ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,

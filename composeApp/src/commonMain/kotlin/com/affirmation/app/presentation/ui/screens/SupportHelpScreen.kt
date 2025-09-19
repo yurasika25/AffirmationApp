@@ -67,7 +67,7 @@ class SupportHelpScreen : Screen {
 
     @Composable
     override fun Content() {
-        val nav = LocalNavigator.currentOrThrow
+        val navigator = LocalNavigator.currentOrThrow
 
         val pageBg = Color(0xFFFAF7FF)
         val lilac = Color(0xFFB99BF7)
@@ -115,7 +115,7 @@ class SupportHelpScreen : Screen {
                             .clickable {
                                 focus.clearFocus(force = true)
                                 keyboard?.hide()
-                                nav.pop()
+                                navigator.pop()
                             }
                     )
 
@@ -238,7 +238,7 @@ class SupportHelpScreen : Screen {
             ThankYouForSupport(
                 accent = lilac,
                 autoReturnMs = autoReturnMs,
-                onAutoBack = { nav.pop() }
+                onAutoBack = { navigator.pop() }
             )
         }
     }
