@@ -32,7 +32,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -61,6 +60,7 @@ import androidx.compose.ui.window.Dialog
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.affirmation.app.domain.model.UserProfileModel
 import com.affirmation.app.utils.GlobalTopBar
 import org.jetbrains.compose.resources.painterResource
 
@@ -79,6 +79,15 @@ class ProfileScreen(
         var pushEnabled by rememberSaveable { mutableStateOf(true) }
 
         var showExitDialog by rememberSaveable { mutableStateOf(false) }
+
+        val user = UserProfileModel(
+            firstName = "Dev",
+            lastName = "Cooper",
+            gender = "developer",
+            age = "25",
+            phoneNumber = "+1 408 XXX XXXX",
+            email = "dev@gmail.com"
+        )
 
         Scaffold(
             containerColor = pageBg,
@@ -99,13 +108,20 @@ class ProfileScreen(
 
                 item {
                     ProfileHeaderCard(
-                        name = "Dev",
-                        email = "dev@gmail.com",
+                        name = user.firstName.toString(),
+                        email = user.email,
                         bio = "I love traveling, books, and morning coffee. I strive to become a better version of myself every day.",
                         daysActive = 127,
                         readCount = 342,
                         createdCount = 5,
-                        accent = accent
+                        accent = accent,
+                        onClick = {
+                            navigator.push(
+                                EditProfileScreen(
+                                    currentProfile = user
+                                )
+                            )
+                        }
                     )
                 }
 
@@ -325,7 +341,8 @@ private fun ProfileHeaderCard(
     daysActive: Int,
     readCount: Int,
     createdCount: Int,
-    accent: Color
+    accent: Color,
+    onClick: () -> Unit
 ) {
     Surface(
         shape = RoundedCornerShape(18.dp),
@@ -361,7 +378,9 @@ private fun ProfileHeaderCard(
                             contentDescription = "Edit icon",
                             tint = Color(0xFF9985D0),
                             modifier = Modifier
-                                .size(16.dp)
+                                .size(16.dp).clickable {
+                                    onClick()
+                                }
                         )
                     }
                     Spacer(Modifier.height(8.dp))

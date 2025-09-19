@@ -242,7 +242,7 @@ private fun PillChip(text: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun RowScope.PlayButton(
+fun RowScope.PlayButton(
     text: String,
     tint: Color,
     onClick: () -> Unit
