@@ -26,7 +26,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -34,7 +33,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -79,15 +77,12 @@ class HomeScreen : Screen {
     @Composable
     override fun Content() {
 
-
         val focus = LocalFocusManager.current
         val keyboard = LocalSoftwareKeyboardController.current
         val navigator = LocalNavigator.currentOrThrow
-        var showLogoutDialog by remember { mutableStateOf(false) }
 
         val todayFormatted = remember {
-            val currentDateTime =
-                Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+            val currentDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
             val monthName = monthNames[currentDateTime.monthNumber - 1]
             "$monthName ${currentDateTime.dayOfMonth}, ${currentDateTime.year}"
         }
@@ -100,8 +95,7 @@ class HomeScreen : Screen {
             topBar = {
                 HomeTopBar(
                     username = "Dev",
-                    date = "Today is $todayFormatted",
-                    onAvatarClick = { showLogoutDialog = true }
+                    date = "Today is $todayFormatted"
                 )
             },
         ) { innerPadding ->
@@ -233,22 +227,13 @@ class HomeScreen : Screen {
                 item { Spacer(Modifier.height(8.dp)) }
             }
         }
-
-        if (showLogoutDialog) {
-            LogoutDialog(
-                onConfirm = { showLogoutDialog = false /* handle logout */ },
-                onDismiss = { showLogoutDialog = false }
-            )
-        }
     }
 }
 
 @Composable
 private fun HomeTopBar(
     username: String,
-    date: String,
-    onAvatarClick: () -> Unit
-) {
+    date: String) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -279,7 +264,6 @@ private fun HomeTopBar(
             elevation = CardDefaults.cardElevation(0.dp),
             modifier = Modifier
                 .size(48.dp)
-                .clickable { onAvatarClick() }
         ) {
             Image(
                 painter = painterResource(Res.drawable.im_avatar),
@@ -514,18 +498,4 @@ private fun BubbleIcon(icon: Painter, onClick: () -> Unit) {
             )
         }
     }
-}
-
-@Composable
-private fun LogoutDialog(
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Confirm Logout") },
-        text = { Text("Are you sure you want to log out?") },
-        confirmButton = { TextButton(onClick = onConfirm) { Text("Log out") } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } }
-    )
 }
