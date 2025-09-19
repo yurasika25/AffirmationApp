@@ -79,13 +79,7 @@ class FavoriteScreen : Screen {
                     .padding(inner)
             ) {
                 Spacer(Modifier.height(6.dp))
-                Text(
-                    "My Favorites",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(horizontal = 20.dp)
-                )
-                Spacer(Modifier.height(6.dp))
+
                 Text(
                     "${favorites.size} affirmations saved",
                     color = Color(0xFF7D7796),

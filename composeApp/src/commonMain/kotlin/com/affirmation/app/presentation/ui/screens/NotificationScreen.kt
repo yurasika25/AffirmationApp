@@ -21,12 +21,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -71,9 +73,9 @@ class NotificationScreen : Screen {
 
         val dataToShow = serverData.ifEmpty { localData }
 
-//        LaunchedEffect(Unit) {
-//            viewModel.loadData() // harmless; UI will show local data until real data arrives
-//        }
+        LaunchedEffect(Unit) {
+            viewModel.loadData() // harmless; UI will show local data until real data arrives
+        }
 
         val pageBg = Color(0xFFFAF7FF)
 
@@ -86,16 +88,11 @@ class NotificationScreen : Screen {
                     .fillMaxSize()
                     .padding(innerPadding)
             ) {
-                Text(
-                    text = "Notifications",
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(top = 6.dp, start = 20.dp, end = 20.dp)
-                )
-                Spacer(Modifier.height(6.dp))
+
                 val newCount = remember(dataToShow) { dataToShow.count { it.isRecent() } }
+
                 Text(
-                    text = if (newCount > 0) "$newCount new notifications" else "No new notifications",
+                    text = if (newCount > 0) "$newCount new notifications" else "No new notifications (server data)",
                     color = Color(0xFF7D7796),
                     fontSize = 14.sp,
                     modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 8.dp)
@@ -103,7 +100,7 @@ class NotificationScreen : Screen {
 
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     when {
-//                        isLoading && serverData.isEmpty() -> CircularProgressIndicator()
+                        isLoading && serverData.isEmpty() -> CircularProgressIndicator()
 
                         errorMessage != null && serverData.isEmpty() -> {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
