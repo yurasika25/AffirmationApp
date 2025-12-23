@@ -29,21 +29,22 @@ kotlin {
     }
     
     sourceSets {
-        
         androidMain.dependencies {
             val voyagerVersion = "1.1.0-beta02"
             implementation(compose.material)
-            implementation("io.ktor:ktor-client-android:2.3.4")
+            implementation("io.ktor:ktor-client-android:3.3.3")
             implementation("cafe.adriel.voyager:voyager-rxjava:${voyagerVersion}")
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-            implementation("io.ktor:ktor-client-okhttp:2.3.12")
+            implementation("io.ktor:ktor-client-okhttp:3.3.3")
         }
-
 
         commonMain.dependencies {
             val voyagerVersion = "1.1.0-beta02"
-            implementation("io.ktor:ktor-client-logging:2.3.5")
+            implementation(compose.materialIconsExtended)
+            implementation("io.coil-kt.coil3:coil-compose:3.0.0")
+            implementation("io.coil-kt.coil3:coil-network-ktor3:3.0.0")
+            implementation("io.ktor:ktor-client-logging:3.3.3")
             implementation(libs.kotlinx.serialization.json)
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -64,9 +65,9 @@ kotlin {
             implementation(compose.material3)
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
 
-            implementation("io.ktor:ktor-client-core:2.3.12")
-            implementation("io.ktor:ktor-client-content-negotiation:2.3.12")
-            implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.12")
+            implementation("io.ktor:ktor-client-core:3.3.3")
+            implementation("io.ktor:ktor-client-content-negotiation:3.3.3")
+            implementation("io.ktor:ktor-serialization-kotlinx-json:3.3.3")
 
             // Navigator
 
@@ -84,7 +85,7 @@ kotlin {
             implementation(libs.kotlin.test)
         }
         iosMain.dependencies {
-            implementation("io.ktor:ktor-client-darwin:2.3.12")
+            implementation("io.ktor:ktor-client-darwin:3.3.3")
         }
     }
 }

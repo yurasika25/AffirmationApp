@@ -3,6 +3,7 @@ package com.affirmation.app.data.network
 import com.affirmation.app.data.network.BaseUrl.BASE_URL
 import com.affirmation.app.domain.model.AffirmationData
 import com.affirmation.app.domain.model.NotificationModel
+import com.affirmation.app.domain.model.Post
 import com.affirmation.app.domain.model.UpdateUserProfileModel
 import com.affirmation.app.domain.model.UserProfileModel
 import io.ktor.client.HttpClient
@@ -17,14 +18,13 @@ import kotlinx.serialization.json.Json
 
 class ApiService(val client: HttpClient) {
 
-
     suspend fun getUserDetails(): UpdateUserProfileModel {
-        val jsonString = client.get("${BaseUrl.BASE_URL}/user/details").bodyAsText()
+        val jsonString = client.get("${BASE_URL}/user/details").bodyAsText()
         return Json.decodeFromString(jsonString)
     }
 
     suspend fun getAffirmationList(): List<AffirmationData> {
-        return client.get("${BaseUrl.BASE_URL}/affirmations").body()
+        return client.get("${BASE_URL}/affirmations").body()
     }
 
     suspend fun updateUserProfile(profile: UpdateUserProfileModel): Boolean {
@@ -39,7 +39,6 @@ class ApiService(val client: HttpClient) {
         }
     }
 
-
     suspend fun getNotificationList(): List<NotificationModel> {
         return client.get("${BASE_URL}/notifications").body()
     }
@@ -47,5 +46,11 @@ class ApiService(val client: HttpClient) {
     suspend fun getUserProfile(): UserProfileModel {
         val jsonString = client.get("${BASE_URL}/user/profile").bodyAsText()
         return Json.decodeFromString(jsonString)
+    }
+
+    suspend fun getPosts(): List<Post> {
+        return client
+            .get("https://jsonplaceholder.typicode.com/posts")
+            .body()
     }
 }
