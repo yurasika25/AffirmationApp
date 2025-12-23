@@ -14,7 +14,7 @@ import org.jetbrains.compose.resources.painterResource
 class MainScreen : Screen {
     @Composable
     override fun Content() {
-        val screens = listOf(HomeScreen(), FavoriteScreen(), NotificationScreen(), ProfileScreen())
+        val screens = listOf(InspirationHomeScreen(), FavoriteScreen(), NotificationScreen(), ProfileScreen())
         val items = listOf(
             NavItem("Home", Res.drawable.home),
             NavItem("Favorites", Res.drawable.heart),
@@ -26,7 +26,7 @@ class MainScreen : Screen {
 
         Scaffold(
             bottomBar = {
-                NavigationBar {
+                    NavigationBar {
                     items.forEachIndexed { index, item ->
                         NavigationBarItem(
                             icon = {
@@ -44,7 +44,7 @@ class MainScreen : Screen {
                 }
             }
         ) { innerPadding ->
-            Box(Modifier.padding(bottom = 50.dp, start = 0.dp, end = 0.dp, top = 8.dp)) {
+            Box(Modifier.padding(bottom = 50.dp, start = 0.dp, end = 0.dp)) {
                 screens[selectedIndex].Content()
             }
         }

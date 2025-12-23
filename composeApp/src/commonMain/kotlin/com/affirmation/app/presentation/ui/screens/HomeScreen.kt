@@ -307,10 +307,12 @@ private fun HeroAffirmationCard(
                 .padding(12.dp)
         ) {
             BubbleIcon("▶", onClick = {
-                navigator.push(PlayerScreen(
-                    image = image,
-                    title = title,
-                ))
+                navigator.push(
+                    PlayerScreen(
+                        image = image,
+                        title = title,
+                    )
+                )
             })
             BubbleIcon("♡") { /* like */ }
         }
@@ -329,7 +331,12 @@ private fun HeroAffirmationCard(
             )
             Spacer(Modifier.height(10.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Read more", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                Text(
+                    "Read more",
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
+                )
                 Spacer(Modifier.width(6.dp))
                 Text("→", color = Color.White)
             }
@@ -383,10 +390,12 @@ private fun OtherAffirmationCard(
                 .padding(10.dp)
         ) {
             BubbleIcon("▶", onClick = {
-                navigator.push(PlayerScreen(
-                    image = image,
-                    title = title,
-                ))
+                navigator.push(
+                    PlayerScreen(
+                        image = image,
+                        title = title,
+                    )
+                )
             })
 
 
@@ -449,6 +458,7 @@ private fun BubbleIcon(label: String, onClick: () -> Unit) {
         ) { Text(label, color = Color.White) }
     }
 }
+
 @Composable
 private fun LogoutDialog(
     onConfirm: () -> Unit,

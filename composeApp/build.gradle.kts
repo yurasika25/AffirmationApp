@@ -39,9 +39,11 @@ kotlin {
             implementation("io.ktor:ktor-client-okhttp:3.3.3")
         }
 
-
         commonMain.dependencies {
             val voyagerVersion = "1.1.0-beta02"
+            implementation(compose.materialIconsExtended)
+            implementation("io.coil-kt.coil3:coil-compose:3.0.0")
+            implementation("io.coil-kt.coil3:coil-network-ktor3:3.0.0")
             implementation("io.ktor:ktor-client-logging:3.3.3")
             implementation(libs.kotlinx.serialization.json)
             implementation(compose.runtime)
@@ -83,7 +85,7 @@ kotlin {
             implementation(libs.kotlin.test)
         }
         iosMain.dependencies {
-            implementation("io.ktor:ktor-client-darwin:2.3.12")
+            implementation("io.ktor:ktor-client-darwin:3.3.3")
         }
     }
 }
