@@ -40,7 +40,7 @@ kotlin {
         }
 
         commonMain.dependencies {
-            val voyagerVersion = "1.1.0-beta02"
+            val voyagerVersion = "1.1.0-beta03"
             implementation(compose.materialIconsExtended)
             implementation("io.coil-kt.coil3:coil-compose:3.0.0")
             implementation("io.coil-kt.coil3:coil-network-ktor3:3.0.0")
@@ -70,6 +70,9 @@ kotlin {
             implementation("io.ktor:ktor-serialization-kotlinx-json:3.3.3")
 
             // Navigator
+
+
+            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.1")
 
             implementation("cafe.adriel.voyager:voyager-navigator:${voyagerVersion}")
             implementation("cafe.adriel.voyager:voyager-screenmodel:${voyagerVersion}")

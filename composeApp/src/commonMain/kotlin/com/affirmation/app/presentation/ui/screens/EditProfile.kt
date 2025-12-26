@@ -1,34 +1,14 @@
 package com.affirmation.app.presentation.ui.screens
 
-import affirmationapp.composeapp.generated.resources.Res
-import affirmationapp.composeapp.generated.resources.arrow_back
+import AffirmationToolBar
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -38,101 +18,113 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.affirmation.app.createHttpClient
 import com.affirmation.app.data.network.ApiService
 import com.affirmation.app.domain.model.UpdateUserProfileModel
-import com.affirmation.app.domain.model.UserProfileModel
+import com.affirmation.app.utils.HideBottomBar
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.painterResource
 
-class EditProfileScreen(private val currentProfile: UserProfileModel?) : Screen {
+data class EditProfileScreen(
+    val firstNameArg: String,
+    val lastNameArg: String,
+    val ageArg: String,
+    val phoneArg: String,
+    val emailArg: String,
+    val genderArg: String
+) : Screen {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
 
+        HideBottomBar()
+
+        val pageBgTop = Color(0xFFF7FAFF)
+        val pageBgBottom = Color(0xFFEAF1FF)
+
         val navigator = LocalNavigator.currentOrThrow
         val coroutineScope = rememberCoroutineScope()
         val apiService = remember { ApiService(createHttpClient()) }
 
-        var firstName by remember { mutableStateOf(currentProfile?.firstName) }
-        var lastName by remember { mutableStateOf(currentProfile?.lastName) }
-        var age by remember { mutableStateOf(currentProfile?.age) }
-        var phone by remember { mutableStateOf(currentProfile?.phoneNumber) }
-        var email by remember { mutableStateOf(currentProfile?.email) }
-        var gender by remember { mutableStateOf(currentProfile?.gender) }
+        var firstName by remember { mutableStateOf(firstNameArg) }
+        var lastName by remember { mutableStateOf(lastNameArg) }
+        var age by remember { mutableStateOf(ageArg) }
+        var phone by remember { mutableStateOf(phoneArg) }
+        var email by remember { mutableStateOf(emailArg) }
+        var gender by remember { mutableStateOf(genderArg) }
 
         var isLoading by remember { mutableStateOf(false) }
         var message by remember { mutableStateOf<String?>(null) }
 
         Scaffold(
             topBar = {
-                TopAppBar(
-                    title = { Text("Details") },
-                    navigationIcon = {
-                        Icon(
-                            painter = painterResource(Res.drawable.arrow_back),
-                            contentDescription = "Arrow back icon",
-                            tint = Color(0xFF9985D0),
-                            modifier = Modifier
-                                .size(32.dp)
-                                .clickable {
-                                    navigator.pop()
-                                }
-                        )
-                    }
+                AffirmationToolBar(
+                    title = "Details",
+                    showBack = true,
+                    onBackClick = { navigator.pop() }
                 )
             }
         ) { padding ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color(0xFFFDF7FF))
+                    .background(Brush.verticalGradient(listOf(pageBgTop, pageBgBottom)))
                     .padding(padding)
                     .padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
                 OutlinedTextField(
-                    value = firstName!!,
+                    value = firstName,
                     onValueChange = { firstName = it },
                     label = { Text("First Name") },
                     modifier = Modifier.fillMaxWidth()
                 )
+
                 Spacer(Modifier.height(12.dp))
+
                 OutlinedTextField(
-                    value = lastName ?: "My Name",
+                    value = lastName,
                     onValueChange = { lastName = it },
                     label = { Text("Last Name") },
                     modifier = Modifier.fillMaxWidth()
                 )
+
                 Spacer(Modifier.height(12.dp))
+
                 OutlinedTextField(
-                    value = age ?: "25",
+                    value = age,
                     onValueChange = { age = it },
                     label = { Text("Age") },
                     modifier = Modifier.fillMaxWidth()
                 )
+
                 Spacer(Modifier.height(12.dp))
+
                 OutlinedTextField(
-                    value = phone ?: "+123456789",
+                    value = phone,
                     onValueChange = { phone = it },
                     label = { Text("Phone") },
                     modifier = Modifier.fillMaxWidth()
                 )
+
                 Spacer(Modifier.height(12.dp))
+
                 OutlinedTextField(
-                    value = email ?: "test@example.com",
+                    value = email,
                     onValueChange = { email = it },
                     label = { Text("Email") },
                     modifier = Modifier.fillMaxWidth()
                 )
 
                 Spacer(Modifier.height(12.dp))
+
                 OutlinedTextField(
-                    value = gender ?: "None",
-                    onValueChange = { email = it },
+                    value = gender,
+                    onValueChange = { gender = it },
                     label = { Text("Gender") },
                     modifier = Modifier.fillMaxWidth()
                 )
 
                 Spacer(Modifier.height(24.dp))
+
                 Button(
                     onClick = {
                         isLoading = true
@@ -140,12 +132,12 @@ class EditProfileScreen(private val currentProfile: UserProfileModel?) : Screen 
                         coroutineScope.launch {
                             val success = apiService.updateUserProfile(
                                 UpdateUserProfileModel(
-                                    firstName = firstName!!,
-                                    lastName = lastName!!,
-                                    age = age!!,
-                                    phoneNumber = phone!!,
-                                    email = email!!,
-                                    gender = gender!!
+                                    firstName = firstName,
+                                    lastName = lastName,
+                                    age = age,
+                                    phoneNumber = phone,
+                                    email = email,
+                                    gender = gender
                                 )
                             )
                             isLoading = false

@@ -1,5 +1,6 @@
 package com.affirmation.app.presentation.ui.screens
 
+import AffirmationToolBar
 import affirmationapp.composeapp.generated.resources.Res
 import affirmationapp.composeapp.generated.resources.play_filled
 import androidx.compose.foundation.BorderStroke
@@ -48,12 +49,13 @@ import com.affirmation.app.createHttpClient
 import com.affirmation.app.data.network.ApiService
 import com.affirmation.app.domain.model.NotificationModel
 import com.affirmation.app.presentation.viewModel.NotificationsViewModel
-import com.affirmation.app.utils.GlobalTopBar
 import com.affirmation.app.utils.items
 import org.jetbrains.compose.resources.painterResource
 import kotlin.random.Random
 
-class NotificationScreen : Screen {
+class NotificationScreen(
+
+) : Screen {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -73,20 +75,22 @@ class NotificationScreen : Screen {
 
         val dataToShow = serverData.ifEmpty { localData }
 
-        LaunchedEffect(Unit) {
-            viewModel.loadData() // harmless; UI will show local data until real data arrives
-        }
+//        LaunchedEffect(Unit) {
+//            viewModel.loadData() // harmless; UI will show local data until real data arrives
+//        }
 
         val pageBg = Color(0xFFFAF7FF)
 
         Scaffold(
             containerColor = pageBg,
-            topBar = { GlobalTopBar("Notifications") },
+            topBar = { AffirmationToolBar("Notifications") },
         ) { innerPadding ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
+                    .padding(horizontal = 20.dp)
+                    .padding(bottom = 110.dp)
             ) {
 
                 val newCount = remember(dataToShow) { dataToShow.count { it.isRecent() } }
@@ -140,9 +144,7 @@ class NotificationScreen : Screen {
     @Composable
     private fun NotificationList(list: List<NotificationModel>, onPlay: () -> Unit) {
         LazyColumn(
-            contentPadding = PaddingValues(
-                start = 16.dp, end = 16.dp, top = 8.dp, bottom = 24.dp
-            ),
+            contentPadding = PaddingValues(top = 8.dp, bottom = 24.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp),
             modifier = Modifier.fillMaxSize()
         ) {

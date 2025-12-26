@@ -1,15 +1,19 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.affirmation.app.presentation.ui.screens
 
 import affirmationapp.composeapp.generated.resources.Res
-import affirmationapp.composeapp.generated.resources.*
+import affirmationapp.composeapp.generated.resources.im_book
+import affirmationapp.composeapp.generated.resources.im_cards
+import affirmationapp.composeapp.generated.resources.im_music
+import affirmationapp.composeapp.generated.resources.im_photo
+import affirmationapp.composeapp.generated.resources.im_video
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,444 +23,424 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
-import com.affirmation.app.utils.items
-import com.affirmation.app.utils.monthNames
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
+import coil3.compose.AsyncImage
+import com.affirmation.app.utils.theme.dancingSemiBoldFont
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
-private val LavenderBg = Color(0xFFF5F1FB)
-private val CardScrimTop = Color(0x66000000)
-private val CardScrimBottom = Color(0xCC000000)
-private val ChipBg = Color(0xFFE9E1FF)
-private val TextSecondary = Color(0xFF6B6B7A)
+class HomeScreen(
 
-class HomeScreen : Screen {
-
-    @OptIn(ExperimentalLayoutApi::class)
+) : Screen {
     @Composable
     override fun Content() {
+        InspirationHomeContent()
+    }
+}
 
-        val focus = LocalFocusManager.current
-        val keyboard = LocalSoftwareKeyboardController.current
-        val navigator = LocalNavigator.currentOrThrow
+@Composable
+fun InspirationHomeContent(
+    modifier: Modifier = Modifier,
+    greetingName: String = "Yurii",
+    heroImageUrl: String = "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1600&auto=format&fit=crop",
+) {
+    val bg = Color(0xFFEFF3FF)
+    val surfaceCard = Color(0xFFFFFFFF).copy(alpha = 0.78f)
+    val chipBg = Color(0xFFFFFFFF)
+    val chipBorder = Color(0xFFE4E8F5)
+    val onBg = Color(0xFF111827)
 
-        val todayFormatted = remember {
-            val currentDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-            val monthName = monthNames[currentDateTime.monthNumber - 1]
-            "$monthName ${currentDateTime.dayOfMonth}, ${currentDateTime.year}"
-        }
+    val categories = sampleCategories()
+    val popular = samplePopular()
+    val trending = sampleTrending()
 
-        val data = items
-        val hero = data.firstOrNull()
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(bg)
+    ) {
+        AsyncImage(
+            model = heroImageUrl,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(320.dp)
+        )
 
-        Scaffold(
-            containerColor = LavenderBg,
-            topBar = {
-                HomeTopBar(
-                    username = "Dev",
-                    date = "Today is $todayFormatted"
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(320.dp)
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            bg.copy(alpha = 0.65f),
+                            bg
+                        ),
+                        startY = 120f
+                    )
                 )
-            },
-        ) { innerPadding ->
+        )
 
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(14.dp)
-            ) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(bottom = 120.dp)
+        ) {
+            item { Spacer(Modifier.height(8.dp)) }
 
-                item {
-                    var q by remember { mutableStateOf("") }
-                    Surface(
-                        color = Color.White,
-                        shape = RoundedCornerShape(18.dp),
-                        tonalElevation = 0.dp,
-                        shadowElevation = 0.dp,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        TextField(
-                            value = q,
-                            onValueChange = { q = it },
-                            placeholder = { Text("Enter keywords to search for") },
-                            singleLine = true,
-                            leadingIcon = {
-                                Icon(
-                                    painter = painterResource(Res.drawable.search),
-                                    contentDescription = "Search icon",
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            },
-                            colors = TextFieldDefaults.colors(
-                                focusedContainerColor = Color.White,
-                                unfocusedContainerColor = Color.White,
-                                disabledContainerColor = Color.White,
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent
-                            ),
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                            keyboardActions = KeyboardActions(
-                                onSearch = {
-                                    focus.clearFocus(force = true)
-                                    keyboard?.hide()
-                                }
-                            ),
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                }
-
-                item {
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        listOf("#Self-development", "#Selflove", "#Motivation").forEach { label ->
-                            PillChip(label)
-                        }
-                    }
-                }
-
-                if (hero != null) {
-                    item {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Text(
-                                "Affirmation of the day",
-                                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold)
-                            )
-                            Spacer(Modifier.weight(1f))
-                            Icon(
-                                painter = painterResource(Res.drawable.refresh),
-                                contentDescription = "Refresh icon",
-                                modifier = Modifier
-                                    .padding(end = 11.dp)
-                                    .size(16.dp)
-                                    .clickable { /* TODO refresh */ }
-                            )
-                        }
-                    }
-
-                    item {
-                        HeroAffirmationCard(
-                            image = hero.icon,
-                            title = "BELIEVE IN YOURSELF",
-                            tags = listOf("#Self-develop", "#Selflove", "#Motivation"),
-                            onClick = {
-                                navigator.push(
-                                    AffirmationDetailsScreen(
-                                        image = hero.icon,
-                                        bannerTitle = hero.text,
-                                        mainText = hero.subtitle
-                                    )
-                                )
-                            }
-                        )
-                    }
-                }
-
-                if (data.size > 1) {
-                    item {
-                        Text(
-                            "Other affirmations",
-                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold)
-                        )
-                    }
-
-                    items(data.drop(1)) { item ->
-                        OtherAffirmationCard(
-                            image = item.icon,
-                            title = item.text,
-                            tag = "#Selflove",
-                            onClick = {
-                                navigator.push(
-                                    AffirmationDetailsScreen(
-                                        image = item.icon,
-                                        bannerTitle = item.text,
-                                        mainText = item.subtitle
-                                    )
-                                )
-                            })
-                    }
-                }
-
-                item { Spacer(Modifier.height(8.dp)) }
+            item {
+                TopBar(
+                    greetingName = greetingName,
+                    onBg = onBg
+                )
             }
+
+            item { Spacer(Modifier.height(18.dp)) }
+
+            item {
+                QuoteCard(
+                    surfaceCard = surfaceCard,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            item { Spacer(Modifier.height(14.dp)) }
+
+            item {
+                SearchBar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp)
+                )
+            }
+
+            item { Spacer(Modifier.height(18.dp)) }
+
+            item {
+                SectionHeader(
+                    title = "Categories",
+                    subtitle = "Choose what inspires you",
+                    onBg = onBg
+                )
+            }
+
+            item { Spacer(Modifier.height(12.dp)) }
+
+            item {
+                CategoryRow(
+                    items = categories,
+                    chipBg = chipBg,
+                    chipBorder = chipBorder
+                )
+            }
+
+            item { Spacer(Modifier.height(18.dp)) }
+
+            item {
+                SectionHeader(
+                    title = "Popular",
+                    subtitle = "Most played this week",
+                    onBg = onBg
+                )
+            }
+
+            item { Spacer(Modifier.height(12.dp)) }
+
+            item { CardRow(items = popular, 159.dp, 192.dp) }
+
+            item { Spacer(Modifier.height(18.dp)) }
+
+            item {
+                SectionHeader(
+                    title = "Trending",
+                    subtitle = "What's trending today",
+                    onBg = onBg
+                )
+            }
+
+            item { Spacer(Modifier.height(12.dp)) }
+
+            item { CardRow(items = trending, 194.dp, 237.dp) }
         }
     }
 }
 
 @Composable
-private fun HomeTopBar(
-    username: String,
-    date: String) {
+private fun TopBar(
+    greetingName: String,
+    onBg: Color
+) {
     Row(
-        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .padding(16.dp)
             .fillMaxWidth()
             .statusBarsPadding()
+            .padding(horizontal = 20.dp)
+            .padding(top = 6.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Column {
-            Text(
-                text = "Hi, $username!",
-                fontSize = 26.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.Black
-            )
-            Text(
-                text = date,
-                fontSize = 14.sp,
-                color = TextSecondary,
-                modifier = Modifier.padding(top = 6.dp)
-            )
-        }
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        Card(
-            shape = CircleShape,
-            colors = CardDefaults.cardColors(containerColor = Color.LightGray),
-            elevation = CardDefaults.cardElevation(0.dp),
-            modifier = Modifier
-                .size(48.dp)
-        ) {
-            Image(
-                painter = painterResource(Res.drawable.im_avatar),
-                contentDescription = "Avatar",
-                contentScale = ContentScale.Crop
-            )
-        }
-    }
-}
-
-@Composable
-private fun PillChip(text: String) {
-    Surface(color = ChipBg, shape = RoundedCornerShape(16.dp)) {
         Text(
-            text = text,
-            modifier = Modifier.padding(horizontal = 6.dp, vertical = 6.dp),
-            style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Medium)
+            text = "Good Morning, $greetingName",
+            style = MaterialTheme.typography.headlineSmall.copy(
+                fontWeight = FontWeight.SemiBold
+            ),
+            color = onBg,
+            modifier = Modifier.weight(1f),
+            maxLines = 1
         )
     }
 }
 
 @Composable
-private fun HeroAffirmationCard(
-    image: DrawableResource,
-    title: String,
-    tags: List<String>,
-    onClick: () -> Unit
+private fun QuoteCard(
+    surfaceCard: Color,
+    modifier: Modifier = Modifier
 ) {
-
-
-    val navigator = LocalNavigator.currentOrThrow
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(220.dp)
-            .clip(RoundedCornerShape(28.dp))
-            .clickable(onClick = onClick)
+    Card(
+        modifier = modifier.padding(horizontal = 20.dp),
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(containerColor = surfaceCard),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
-        Image(
-            painter = painterResource(image),
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
-
-        Box(
-            Modifier
-                .matchParentSize()
-                .background(
-                    Brush.verticalGradient(
-                        0f to CardScrimTop,
-                        0.55f to Color.Transparent,
-                        1f to CardScrimBottom
-                    )
-                )
-        )
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(12.dp)
-        ) {
-            BubbleIcon(painterResource(Res.drawable.play), onClick = {
-                navigator.push(
-                    PlayerScreen(
-                        image = image,
-                        title = title,
-                    )
-                )
-            })
-            BubbleIcon(painterResource(Res.drawable.like)) { /* like */ }
-        }
-
         Column(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(18.dp)
+            modifier = Modifier.padding(horizontal = 18.dp, vertical = 14.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                title,
-                color = Color.White,
-                fontSize = 26.sp,
-                fontWeight = FontWeight.ExtraBold,
-                maxLines = 2
+                text = "Winston Churchill:",
+                fontFamily = dancingSemiBoldFont(),
+                modifier = Modifier.fillMaxSize(),
+                textAlign = TextAlign.Center,
+                fontSize = 22.sp,
+                color = Color(0xFF1F3B7A)
             )
-            Spacer(Modifier.height(10.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    "Read more",
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
-                )
-                Spacer(Modifier.width(6.dp))
-                Icon(
-                    painter = painterResource(Res.drawable.arrow_up),
-                    contentDescription = "Arrow-up icon",
-                    modifier = Modifier.size(20.dp),
-                    tint = Color.White
-                )
-            }
-            Spacer(Modifier.height(10.dp))
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                tags.forEach { SmallGlassChip(it) }
-            }
+            Spacer(Modifier.height(6.dp))
+            Text(
+                text = "\"Success is the ability to go from failure to failure without losing enthusiasm.\"",
+                modifier = Modifier.fillMaxSize(),
+                fontFamily = dancingSemiBoldFont(),
+                textAlign = TextAlign.Center,
+                fontSize = 20.sp,
+                color = Color(0xFF1F3B7A)
+            )
         }
     }
 }
 
 @Composable
-private fun OtherAffirmationCard(
-    image: DrawableResource,
-    title: String,
-    tag: String,
-    onClick: () -> Unit,
+private fun SearchBar(
+    modifier: Modifier = Modifier
 ) {
+    OutlinedTextField(
+        value = "",
+        onValueChange = { },
+        placeholder = { Text("Search") },
+        leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null) },
+        singleLine = true,
+        shape = RoundedCornerShape(14.dp),
+        modifier = modifier,
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedContainerColor = Color.White.copy(alpha = 0.85f),
+            focusedContainerColor = Color.White.copy(alpha = 0.95f),
+            unfocusedBorderColor = Color(0xFFE4E8F5),
+            focusedBorderColor = Color(0xFFD7DDF0)
+        )
+    )
+}
 
-    val navigator = LocalNavigator.currentOrThrow
+@Composable
+private fun SectionHeader(
+    title: String,
+    subtitle: String,
+    onBg: Color
+) {
+    Column(Modifier.padding(horizontal = 20.dp)) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
+            color = onBg
+        )
+        Spacer(Modifier.height(2.dp))
+        Text(
+            text = subtitle,
+            style = MaterialTheme.typography.bodySmall,
+            color = onBg.copy(alpha = 0.7f)
+        )
+    }
+}
 
-    Box(
+private fun sampleCategories(): List<CategoryItem> = listOf(
+    CategoryItem("Cards", Res.drawable.im_cards),
+    CategoryItem("Music", Res.drawable.im_music),
+    CategoryItem("Video", Res.drawable.im_video),
+    CategoryItem("Photo", Res.drawable.im_photo),
+    CategoryItem("Book", Res.drawable.im_book)
+)
+
+@Immutable
+data class CategoryItem(
+    val label: String,
+    val image: DrawableResource
+)
+
+@Composable
+private fun CategoryRow(
+    items: List<CategoryItem>,
+    chipBg: Color,
+    chipBorder: Color
+) {
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(130.dp)
-            .clip(RoundedCornerShape(22.dp))
-            .clickable(onClick = onClick)
+            .padding(horizontal = 20.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            painter = painterResource(image),
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
-
-        Box(
-            Modifier
-                .matchParentSize()
-                .background(
-                    Brush.verticalGradient(
-                        0f to CardScrimTop.copy(alpha = .35f),
-                        1f to CardScrimBottom.copy(alpha = .55f)
-                    )
-                )
-        )
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(10.dp)
-        ) {
-            BubbleIcon(painterResource(Res.drawable.play), onClick = {
-                navigator.push(
-                    PlayerScreen(
-                        image = image,
-                        title = title,
-                    )
-                )
-            })
-
-
-            BubbleIcon(painterResource(Res.drawable.like)) {}
-        }
-
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(14.dp)
-        ) {
-            Text(
-                title,
-                color = Color.White,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Spacer(Modifier.height(8.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
+        items.forEach { item ->
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                SmallGlassChip(tag)
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("Read more", color = Color.White)
-                    Spacer(Modifier.width(6.dp))
-                    Icon(
-                        painter = painterResource(Res.drawable.arrow_up),
-                        contentDescription = "Arrow-up icon",
-                        modifier = Modifier.size(20.dp),
-                        tint = Color.White
+                Surface(
+                    shape = RoundedCornerShape(14.dp),
+                    color = chipBg,
+                    modifier = Modifier
+                        .size(width = 56.dp, height = 44.dp)
+                        .border(1.dp, chipBorder, RoundedCornerShape(14.dp))
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Image(
+                            painter = painterResource(item.image),
+                            contentDescription = null
+                        )
+                    }
+                }
+
+                Spacer(Modifier.height(6.dp))
+
+                Text(
+                    text = item.label,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = Color(0xFF111827).copy(alpha = 0.9f)
+                )
+            }
+        }
+    }
+}
+
+@Immutable
+data class MediaCard(
+    val tag: String,
+    val title: String,
+    val subtitle: String,
+    val imageUrl: String
+)
+
+@Composable
+private fun CardRow(items: List<MediaCard>, with: Dp, height: Dp ) {
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(14.dp),
+        contentPadding = PaddingValues(start = 20.dp, end = 20.dp)
+    ) {
+        items(items) { card ->
+            MediaImageCard(
+                card = card,
+                modifier = Modifier.size(width = with, height = height)
+            )
+        }
+    }
+}
+
+@Composable
+private fun MediaImageCard(
+    card: MediaCard,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        shape = RoundedCornerShape(18.dp),
+        modifier = modifier,
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+    ) {
+        Box {
+            AsyncImage(
+                model = card.imageUrl,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Black.copy(alpha = 0.05f),
+                                Color.Black.copy(alpha = 0.55f)
+                            )
+                        )
+                    )
+            )
+
+            Surface(
+                color = Color.Black.copy(alpha = 0.35f),
+                shape = RoundedCornerShape(10.dp),
+                modifier = Modifier
+                    .padding(12.dp)
+                    .align(Alignment.TopStart)
+            ) {
+                Text(
+                    text = card.tag,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = Color.White,
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                )
+            }
+
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(14.dp)
+            ) {
+                Text(
+                    text = card.title,
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                    color = Color.White
+                )
+                if (card.subtitle.isNotBlank()) {
+                    Spacer(Modifier.height(2.dp))
+                    Text(
+                        text = card.subtitle,
+                        style = MaterialTheme.typography.labelMedium,
+                        color = Color.White.copy(alpha = 0.85f)
                     )
                 }
             }
@@ -464,38 +448,65 @@ private fun OtherAffirmationCard(
     }
 }
 
-@Composable
-private fun SmallGlassChip(text: String) {
-    Surface(
-        color = Color(0x55FFFFFF),
-        contentColor = Color.White,
-        shape = RoundedCornerShape(16.dp)
-    ) {
-        Text(
-            text,
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-            style = MaterialTheme.typography.labelLarge
-        )
-    }
-}
+private fun samplePopular(): List<MediaCard> = listOf(
+    MediaCard(
+        tag = "Music",
+        title = "Nature sounds",
+        subtitle = "",
+        imageUrl = "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1200&auto=format&fit=crop"
+    ),
+    MediaCard(
+        tag = "Card",
+        title = "The day starts\nwith you",
+        subtitle = "",
+        imageUrl = "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1200&auto=format&fit=crop"
+    ),
+    MediaCard(
+        tag = "Gallery",
+        title = "Breathe slowly",
+        subtitle = "",
+        imageUrl = "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1200&auto=format&fit=crop"
+    ),
 
+    MediaCard(
+        tag = "Video",
+        title = "A video\nthat changes your mood",
+        subtitle = "",
+        imageUrl = "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1200&auto=format&fit=crop"
+    ),
+)
+
+private fun sampleTrending(): List<MediaCard> = listOf(
+    MediaCard(
+        tag = "Relax",
+        title = "In the forest",
+        subtitle = "Nature Sounds",
+        imageUrl = "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1200&auto=format&fit=crop"
+    ),
+    MediaCard(
+        tag = "Motivation",
+        title = "Sunrise Energy",
+        subtitle = "Energetic Morning",
+        imageUrl = "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=1200&auto=format&fit=crop"
+    ),
+    MediaCard(
+        tag = "Motivation",
+        title = "Sunrise Energy",
+        subtitle = "Energetic Morning",
+        imageUrl = "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=1200&auto=format&fit=crop"
+    ),
+    MediaCard(
+        tag = "Relax",
+        title = "In the forest",
+        subtitle = "Nature Sounds",
+        imageUrl = "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1200&auto=format&fit=crop"
+    )
+)
+
+@Preview
 @Composable
-private fun BubbleIcon(icon: Painter, onClick: () -> Unit) {
-    Surface(
-        color = Color(0x33000000),
-        shape = CircleShape
-    ) {
-        Box(
-            modifier = Modifier
-                .size(36.dp)
-                .clickable(onClick = onClick),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = icon,
-                contentDescription = null,
-                tint = Color.White
-            )
-        }
+private fun InspirationHomeScreenPreview() {
+    MaterialTheme {
+        InspirationHomeContent()
     }
 }

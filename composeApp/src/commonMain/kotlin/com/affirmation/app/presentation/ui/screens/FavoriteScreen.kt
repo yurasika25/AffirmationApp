@@ -1,5 +1,6 @@
 package com.affirmation.app.presentation.ui.screens
 
+import AffirmationToolBar
 import affirmationapp.composeapp.generated.resources.Res
 import affirmationapp.composeapp.generated.resources.play_filled
 import affirmationapp.composeapp.generated.resources.red_heart
@@ -43,12 +44,11 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.affirmation.app.utils.GlobalTopBar
 import com.affirmation.app.utils.items
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
-class FavoriteScreen : Screen {
+class FavoriteScreen() : Screen {
 
     @Composable
     override fun Content() {
@@ -71,12 +71,14 @@ class FavoriteScreen : Screen {
 
         Scaffold(
             containerColor = pageBg,
-            topBar = { GlobalTopBar("My Favorites") },
+            topBar = { AffirmationToolBar("My Favorites") },
         ) { inner ->
             Column(
                 Modifier
                     .fillMaxSize()
                     .padding(inner)
+                    .padding(horizontal = 20.dp)
+
             ) {
                 Spacer(Modifier.height(6.dp))
 
@@ -93,9 +95,9 @@ class FavoriteScreen : Screen {
                 )
 
                 LazyColumn(
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(14.dp),
-                    modifier = Modifier.fillMaxSize()
+                    contentPadding = PaddingValues(bottom = 110.dp),
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
                     items(favorites) { f ->
                         FavoriteCard(
