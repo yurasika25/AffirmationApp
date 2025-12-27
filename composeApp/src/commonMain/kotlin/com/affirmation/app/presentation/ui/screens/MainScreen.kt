@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -30,6 +31,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
@@ -77,9 +79,18 @@ class MainScreen : Screen {
                             enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
                             exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
                         ) {
+
+                            val bottomBarShape = RoundedCornerShape(
+                                topStart = 22.dp,
+                                topEnd = 22.dp
+                            )
+
                             NavigationBar(
                                 containerColor = Color(0xFFFAFBFF),
-                                tonalElevation = 0.dp
+                                tonalElevation = 0.dp,
+                                modifier = Modifier
+                                    .clip(bottomBarShape)
+
                             ) {
                                 tabs.forEachIndexed { index, tab ->
                                     val selected = tabNavigator.current.key == tab.key
