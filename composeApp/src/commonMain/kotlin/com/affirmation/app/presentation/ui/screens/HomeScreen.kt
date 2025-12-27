@@ -57,9 +57,7 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-class HomeScreen(
-
-) : Screen {
+class HomeScreen() : Screen {
     @Composable
     override fun Content() {
         InspirationHomeContent()
@@ -133,16 +131,16 @@ fun InspirationHomeContent(
                     modifier = Modifier.fillMaxWidth()
                 )
             }
-
-            item { Spacer(Modifier.height(14.dp)) }
-
-            item {
-                SearchBar(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp)
-                )
-            }
+//
+//            item { Spacer(Modifier.height(14.dp)) }
+//
+//            item {
+//                SearchBar(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(horizontal = 20.dp)
+//                )
+//            }
 
             item { Spacer(Modifier.height(18.dp)) }
 
@@ -256,26 +254,26 @@ private fun QuoteCard(
     }
 }
 
-@Composable
-private fun SearchBar(
-    modifier: Modifier = Modifier
-) {
-    OutlinedTextField(
-        value = "",
-        onValueChange = { },
-        placeholder = { Text("Search") },
-        leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null) },
-        singleLine = true,
-        shape = RoundedCornerShape(14.dp),
-        modifier = modifier,
-        colors = OutlinedTextFieldDefaults.colors(
-            unfocusedContainerColor = Color.White.copy(alpha = 0.85f),
-            focusedContainerColor = Color.White.copy(alpha = 0.95f),
-            unfocusedBorderColor = Color(0xFFE4E8F5),
-            focusedBorderColor = Color(0xFFD7DDF0)
-        )
-    )
-}
+//@Composable
+//private fun SearchBar(
+//    modifier: Modifier = Modifier
+//) {
+//    OutlinedTextField(
+//        value = "",
+//        onValueChange = { },
+//        placeholder = { Text("Search") },
+//        leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null) },
+//        singleLine = true,
+//        shape = RoundedCornerShape(14.dp),
+//        modifier = modifier,
+//        colors = OutlinedTextFieldDefaults.colors(
+//            unfocusedContainerColor = Color.White.copy(alpha = 0.85f),
+//            focusedContainerColor = Color.White.copy(alpha = 0.95f),
+//            unfocusedBorderColor = Color(0xFFE4E8F5),
+//            focusedBorderColor = Color(0xFFD7DDF0)
+//        )
+//    )
+//}
 
 @Composable
 private fun SectionHeader(
