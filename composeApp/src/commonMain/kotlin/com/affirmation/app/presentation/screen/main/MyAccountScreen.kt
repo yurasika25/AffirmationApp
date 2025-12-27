@@ -1,4 +1,4 @@
-package com.affirmation.app.presentation.ui.screens
+package com.affirmation.app.presentation.screen.main
 
 import AffirmationToolBar
 import affirmationapp.composeapp.generated.resources.Res
@@ -32,6 +32,8 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.affirmation.app.domain.model.UserProfileModel
+import com.affirmation.app.presentation.screen.EditProfileScreen
+import com.affirmation.app.presentation.screen.SettingScreen
 import com.affirmation.app.utils.theme.dancingRegularFont
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource

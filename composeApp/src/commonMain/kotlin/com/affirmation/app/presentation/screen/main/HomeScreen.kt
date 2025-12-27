@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.affirmation.app.presentation.ui.screens
+package com.affirmation.app.presentation.screen.main
 
 import affirmationapp.composeapp.generated.resources.Res
 import affirmationapp.composeapp.generated.resources.im_book
@@ -11,6 +11,7 @@ import affirmationapp.composeapp.generated.resources.im_video
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,15 +28,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -51,7 +47,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
 import coil3.compose.AsyncImage
+import com.affirmation.app.presentation.screen.categories.BookScreen
+import com.affirmation.app.presentation.screen.categories.CardsScreen
+import com.affirmation.app.presentation.screen.categories.MusicScreen
+import com.affirmation.app.presentation.screen.categories.PhotoScreen
+import com.affirmation.app.presentation.screen.categories.VideoScreen
 import com.affirmation.app.utils.theme.dancingSemiBoldFont
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
@@ -70,6 +72,8 @@ fun InspirationHomeContent(
     greetingName: String = "Yurii",
     heroImageUrl: String = "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1600&auto=format&fit=crop",
 ) {
+    val navigator = LocalNavigator.current
+
     val bg = Color(0xFFEFF3FF)
     val surfaceCard = Color(0xFFFFFFFF).copy(alpha = 0.78f)
     val chipBg = Color(0xFFFFFFFF)
@@ -131,16 +135,6 @@ fun InspirationHomeContent(
                     modifier = Modifier.fillMaxWidth()
                 )
             }
-//
-//            item { Spacer(Modifier.height(14.dp)) }
-//
-//            item {
-//                SearchBar(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(horizontal = 20.dp)
-//                )
-//            }
 
             item { Spacer(Modifier.height(18.dp)) }
 
@@ -158,7 +152,18 @@ fun InspirationHomeContent(
                 CategoryRow(
                     items = categories,
                     chipBg = chipBg,
-                    chipBorder = chipBorder
+                    chipBorder = chipBorder,
+                    onCategoryClick = { category ->
+                        val screen: Screen = when (category.label) {
+                            "Cards" -> CardsScreen()
+                            "Music" -> MusicScreen()
+                            "Video" -> VideoScreen()
+                            "Photo" -> PhotoScreen()
+                            "Book" -> BookScreen()
+                            else -> { throw IllegalArgumentException("Unknown category: ${category.label}") }
+                        }
+                        navigator?.push(screen)
+                    }
                 )
             }
 
@@ -174,7 +179,7 @@ fun InspirationHomeContent(
 
             item { Spacer(Modifier.height(12.dp)) }
 
-            item { CardRow(items = popular, 159.dp, 192.dp) }
+            item { CardRow(items = popular, with = 159.dp, height = 192.dp) }
 
             item { Spacer(Modifier.height(18.dp)) }
 
@@ -188,7 +193,7 @@ fun InspirationHomeContent(
 
             item { Spacer(Modifier.height(12.dp)) }
 
-            item { CardRow(items = trending, 194.dp, 237.dp) }
+            item { CardRow(items = trending, with = 194.dp, height = 237.dp) }
         }
     }
 }
@@ -254,27 +259,6 @@ private fun QuoteCard(
     }
 }
 
-//@Composable
-//private fun SearchBar(
-//    modifier: Modifier = Modifier
-//) {
-//    OutlinedTextField(
-//        value = "",
-//        onValueChange = { },
-//        placeholder = { Text("Search") },
-//        leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null) },
-//        singleLine = true,
-//        shape = RoundedCornerShape(14.dp),
-//        modifier = modifier,
-//        colors = OutlinedTextFieldDefaults.colors(
-//            unfocusedContainerColor = Color.White.copy(alpha = 0.85f),
-//            focusedContainerColor = Color.White.copy(alpha = 0.95f),
-//            unfocusedBorderColor = Color(0xFFE4E8F5),
-//            focusedBorderColor = Color(0xFFD7DDF0)
-//        )
-//    )
-//}
-
 @Composable
 private fun SectionHeader(
     title: String,
@@ -314,7 +298,8 @@ data class CategoryItem(
 private fun CategoryRow(
     items: List<CategoryItem>,
     chipBg: Color,
-    chipBorder: Color
+    chipBorder: Color,
+    onCategoryClick: (CategoryItem) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -333,11 +318,12 @@ private fun CategoryRow(
                     modifier = Modifier
                         .size(width = 56.dp, height = 44.dp)
                         .border(1.dp, chipBorder, RoundedCornerShape(14.dp))
+                        .clickable { onCategoryClick(item) }
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         Image(
                             painter = painterResource(item.image),
-                            contentDescription = null
+                            contentDescription = item.label
                         )
                     }
                 }
@@ -363,7 +349,7 @@ data class MediaCard(
 )
 
 @Composable
-private fun CardRow(items: List<MediaCard>, with: Dp, height: Dp ) {
+private fun CardRow(items: List<MediaCard>, with: Dp, height: Dp) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(14.dp),
         contentPadding = PaddingValues(start = 20.dp, end = 20.dp)
@@ -465,7 +451,6 @@ private fun samplePopular(): List<MediaCard> = listOf(
         subtitle = "",
         imageUrl = "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1200&auto=format&fit=crop"
     ),
-
     MediaCard(
         tag = "Video",
         title = "A video\nthat changes your mood",

@@ -1,4 +1,4 @@
-package com.affirmation.app.presentation.ui.screens
+package com.affirmation.app.presentation.screen
 
 import affirmationapp.composeapp.generated.resources.Res
 import affirmationapp.composeapp.generated.resources.arrow_back
@@ -42,11 +42,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.SpanStyle
@@ -356,7 +358,7 @@ private fun AttachmentDropZone(
     onClick: () -> Unit
 ) {
     val radius = 16.dp
-    val dash = with(androidx.compose.ui.platform.LocalDensity.current) { 8.dp.toPx() }
+    val dash = with(LocalDensity.current) { 8.dp.toPx() }
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -367,7 +369,7 @@ private fun AttachmentDropZone(
                 drawRoundRect(
                     color = borderColor,
                     size = size,
-                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(
+                    cornerRadius = CornerRadius(
                         radius.toPx(),
                         radius.toPx()
                     ),

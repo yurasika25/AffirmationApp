@@ -1,9 +1,10 @@
-package com.affirmation.app.presentation.ui.screens
+package com.affirmation.app.presentation.screen
 
 import affirmationapp.composeapp.generated.resources.Res
 import affirmationapp.composeapp.generated.resources.arrow_back
 import affirmationapp.composeapp.generated.resources.done_circle_red_heart
 import affirmationapp.composeapp.generated.resources.heart_outline
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -380,7 +381,7 @@ private fun ThankYouContent(
         Surface(
             color = Color.White,
             shape = RoundedCornerShape(18.dp),
-            border = androidx.compose.foundation.BorderStroke(1.dp, Color(0x22000000)),
+            border = BorderStroke(1.dp, Color(0x22000000)),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
