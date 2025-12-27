@@ -88,7 +88,7 @@ class ProfileScreen() : Screen {
                         .fillMaxWidth()
                         .verticalScroll(rememberScrollState())
                         .padding(horizontal = 20.dp)
-                        .padding(bottom = 120.dp)
+                        .padding(bottom = 140.dp)
                 ) {
 
                     Spacer(Modifier.height(6.dp))

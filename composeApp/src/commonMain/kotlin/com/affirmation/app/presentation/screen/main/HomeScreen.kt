@@ -51,9 +51,9 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import coil3.compose.AsyncImage
 import com.affirmation.app.presentation.screen.categories.BookScreen
 import com.affirmation.app.presentation.screen.categories.CardsScreen
-import com.affirmation.app.presentation.screen.categories.MusicScreen
 import com.affirmation.app.presentation.screen.categories.PhotoScreen
 import com.affirmation.app.presentation.screen.categories.VideoScreen
+import com.affirmation.app.presentation.screen.categories.MusicScreen
 import com.affirmation.app.utils.theme.dancingSemiBoldFont
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
@@ -116,7 +116,7 @@ fun InspirationHomeContent(
 
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(bottom = 120.dp)
+            contentPadding = PaddingValues(bottom = 140.dp)
         ) {
             item { Spacer(Modifier.height(8.dp)) }
 
