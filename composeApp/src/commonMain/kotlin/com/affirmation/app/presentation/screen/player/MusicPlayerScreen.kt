@@ -61,9 +61,9 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import coil3.compose.AsyncImage
-import com.affirmation.app.presentation.screen.player.audioplayer.AudioSource
-import com.affirmation.app.presentation.screen.player.audioplayer.PlayerController
-import com.affirmation.app.presentation.screen.player.audioplayer.PlayerState
+import com.affirmation.app.presentation.screen.player.controller.PlayerController
+import com.affirmation.app.presentation.screen.player.model.AudioSource
+import com.affirmation.app.presentation.screen.player.state.PlayerState
 import com.affirmation.app.utils.HideBottomBar
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource

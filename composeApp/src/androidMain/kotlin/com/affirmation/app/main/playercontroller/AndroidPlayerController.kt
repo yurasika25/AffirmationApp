@@ -5,9 +5,9 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-import com.affirmation.app.presentation.screen.player.audioplayer.AudioSource
-import com.affirmation.app.presentation.screen.player.audioplayer.PlayerController
-import com.affirmation.app.presentation.screen.player.audioplayer.PlayerState
+import com.affirmation.app.presentation.screen.player.controller.PlayerController
+import com.affirmation.app.presentation.screen.player.model.AudioSource
+import com.affirmation.app.presentation.screen.player.state.PlayerState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

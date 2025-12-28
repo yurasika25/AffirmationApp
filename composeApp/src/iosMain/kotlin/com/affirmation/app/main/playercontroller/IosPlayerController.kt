@@ -1,8 +1,8 @@
 package com.affirmation.app.main.playercontroller
 
-import com.affirmation.app.presentation.screen.player.audioplayer.AudioSource
-import com.affirmation.app.presentation.screen.player.audioplayer.PlayerController
-import com.affirmation.app.presentation.screen.player.audioplayer.PlayerState
+import com.affirmation.app.presentation.screen.player.controller.PlayerController
+import com.affirmation.app.presentation.screen.player.model.AudioSource
+import com.affirmation.app.presentation.screen.player.state.PlayerState
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.memScoped
 import kotlinx.coroutines.CoroutineScope
