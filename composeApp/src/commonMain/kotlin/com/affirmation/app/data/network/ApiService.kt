@@ -3,7 +3,6 @@ package com.affirmation.app.data.network
 import com.affirmation.app.data.network.BaseUrl.BASE_URL
 import com.affirmation.app.domain.model.AffirmationData
 import com.affirmation.app.domain.model.NotificationModel
-import com.affirmation.app.domain.model.Post
 import com.affirmation.app.domain.model.UpdateUserProfileModel
 import com.affirmation.app.domain.model.UserProfileModel
 import io.ktor.client.HttpClient
@@ -46,11 +45,5 @@ class ApiService(val client: HttpClient) {
     suspend fun getUserProfile(): UserProfileModel {
         val jsonString = client.get("${BASE_URL}/user/profile").bodyAsText()
         return Json.decodeFromString(jsonString)
-    }
-
-    suspend fun getPosts(): List<Post> {
-        return client
-            .get("https://jsonplaceholder.typicode.com/posts")
-            .body()
     }
 }

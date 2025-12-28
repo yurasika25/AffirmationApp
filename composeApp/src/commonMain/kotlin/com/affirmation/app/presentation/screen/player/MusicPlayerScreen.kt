@@ -3,17 +3,17 @@
 package com.affirmation.app.presentation.screen.player
 
 import affirmationapp.composeapp.generated.resources.Res
-import affirmationapp.composeapp.generated.resources.im_list
 import affirmationapp.composeapp.generated.resources.im_back_btn
 import affirmationapp.composeapp.generated.resources.im_download
 import affirmationapp.composeapp.generated.resources.im_favorite
+import affirmationapp.composeapp.generated.resources.im_list
+import affirmationapp.composeapp.generated.resources.im_pause
+import affirmationapp.composeapp.generated.resources.im_play
 import affirmationapp.composeapp.generated.resources.im_repeat
 import affirmationapp.composeapp.generated.resources.im_share
 import affirmationapp.composeapp.generated.resources.im_shuffle
 import affirmationapp.composeapp.generated.resources.move_back
 import affirmationapp.composeapp.generated.resources.move_forvard
-import affirmationapp.composeapp.generated.resources.im_pause
-import affirmationapp.composeapp.generated.resources.im_play
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -39,6 +39,9 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,10 +61,14 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import coil3.compose.AsyncImage
+import com.affirmation.app.presentation.screen.player.audioplayer.AudioSource
+import com.affirmation.app.presentation.screen.player.audioplayer.PlayerController
+import com.affirmation.app.presentation.screen.player.audioplayer.PlayerState
 import com.affirmation.app.utils.HideBottomBar
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
-import kotlin.math.roundToInt
+import org.koin.compose.koinInject
+import kotlin.math.roundToLong
 
 class MusicPlayerScreen(
     private val imageUrl: String,
@@ -73,10 +80,28 @@ class MusicPlayerScreen(
         val navigator = LocalNavigator.currentOrThrow
         HideBottomBar()
 
+        val controller = koinInject<PlayerController>()
+        val playerState by controller.state.collectAsState()
+
+        val url = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+
+        LaunchedEffect(controller, url) {
+            controller.setSource(
+                source = AudioSource.Url(url),
+                playWhenReady = true
+            )
+        }
+
+        DisposableEffect(Unit) {
+            onDispose { controller.release() }
+        }
+
         MorningEnergyContent(
             navigator = navigator,
             imageUrl = imageUrl,
             title = title,
+            url,
+
             icBack = Res.drawable.im_back_btn,
             icFavorite = Res.drawable.im_favorite,
             icShare = Res.drawable.im_share,
@@ -88,6 +113,11 @@ class MusicPlayerScreen(
             icRepeat = Res.drawable.im_repeat,
             icPlay = Res.drawable.im_play,
             icPause = Res.drawable.im_pause,
+            playerState = playerState,
+            onPlay = { controller.play() },
+            onPause = { controller.pause() },
+            onStop = { controller.stop() },
+            onSeekMs = { ms -> controller.seekTo(ms) },
         )
     }
 }
@@ -97,10 +127,8 @@ fun MorningEnergyContent(
     navigator: Navigator,
     imageUrl: String,
     title: String = "Morning Energy",
+    url: String,
     trackTitle: String = "Sunrise Energy",
-    durationSec: Int = 120,
-    initialPositionSec: Int = 42,
-    isPlayingInitial: Boolean = false,
     icBack: DrawableResource,
     icFavorite: DrawableResource,
     icShare: DrawableResource,
@@ -124,12 +152,49 @@ fun MorningEnergyContent(
     onNextClick: () -> Unit = {},
     onRepeatClick: () -> Unit = {},
     onSeek: (Int) -> Unit = {},
-) {
-    var isPlaying by remember { mutableStateOf(isPlayingInitial) }
-    var positionSec by remember { mutableStateOf(initialPositionSec.coerceIn(0, durationSec)) }
 
-    val progress = remember(positionSec, durationSec) {
-        if (durationSec <= 0) 0f else positionSec.toFloat() / durationSec.toFloat()
+    playerState: PlayerState,
+    onPlay: () -> Unit,
+    onPause: () -> Unit,
+    onStop: () -> Unit,
+    onSeekMs: (Long) -> Unit,
+) {
+    val durationMs = playerState.durationMs.coerceAtLeast(0L)
+    val positionMs = playerState.positionMs.coerceIn(
+        0L,
+        if (durationMs > 0L) durationMs else Long.MAX_VALUE
+    )
+
+    val durationSecReal = (durationMs / 1000L).toInt().coerceAtLeast(0)
+    val positionSecReal = (positionMs / 1000L).toInt().coerceIn(
+        0,
+        if (durationSecReal > 0) durationSecReal else Int.MAX_VALUE
+    )
+
+
+    var userSeeking by remember(url) { mutableStateOf(false) }
+    var seekProgress by remember(url) { mutableStateOf(0f) }
+
+
+    LaunchedEffect(durationMs, positionMs, userSeeking) {
+        if (!userSeeking) {
+            seekProgress = if (durationMs > 0L) {
+                (positionMs.toDouble() / durationMs.toDouble())
+                    .toFloat()
+                    .coerceIn(0f, 1f)
+            } else {
+                0f
+            }
+        }
+    }
+
+
+    val progress = remember(userSeeking, seekProgress, durationMs, positionMs) {
+        when {
+            durationMs <= 0L -> 0f
+            userSeeking -> seekProgress.coerceIn(0f, 1f)
+            else -> (positionMs.toDouble() / durationMs.toDouble()).toFloat().coerceIn(0f, 1f)
+        }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -198,29 +263,55 @@ fun MorningEnergyContent(
             onListsClick = onListsClick
         )
 
+        playerState.error?.let { err ->
+            Text(
+                text = err,
+                color = Color.Red.copy(alpha = 0.85f),
+                style = MaterialTheme.typography.labelMedium,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 210.dp)
+            )
+        }
+
         // Bottom sheet player
         PlayerBottomSheet(
             trackTitle = trackTitle,
-            positionSec = positionSec,
-            durationSec = durationSec,
+            positionSec = positionSecReal,
+            durationSec = durationSecReal,
             progress = progress,
-            isPlaying = isPlaying,
+            isPlaying = playerState.isPlaying,
+
             icShuffle = icShuffle,
             icPrev = icPrev,
             icNext = icNext,
             icRepeat = icRepeat,
             icPlay = icPlay,
             icPause = icPause,
+
             onSeekProgress = { newProgress ->
-                val newPos = (newProgress * durationSec).roundToInt().coerceIn(0, durationSec)
-                positionSec = newPos
-                onSeek(newPos)
+                userSeeking = true
+                seekProgress = newProgress.coerceIn(0f, 1f)
+
+                if (durationMs > 0L) {
+                    val targetMs = (durationMs.toDouble() * seekProgress.toDouble()).roundToLong()
+                        .coerceIn(0L, durationMs)
+                    onSeekMs(targetMs)
+
+                    val targetSec = (targetMs / 1000L).toInt()
+                    onSeek(targetSec)
+                }
             },
+            onSeekFinished = {
+                userSeeking = false
+            },
+
             onShuffleClick = onShuffleClick,
             onPrevClick = onPrevClick,
             onPlayPauseClick = {
-                isPlaying = !isPlaying
-                onPlayPauseClick(isPlaying)
+                val nowPlaying = playerState.isPlaying
+                if (nowPlaying) onPause() else onPlay()
+                onPlayPauseClick(!nowPlaying)
             },
             onNextClick = onNextClick,
             onRepeatClick = onRepeatClick,
@@ -256,7 +347,6 @@ private fun RightActionsColumn(
     }
 }
 
-// right group of buttons
 @Composable
 private fun ActionChip(
     icon: DrawableResource,
@@ -308,6 +398,8 @@ private fun PlayerBottomSheet(
     icPause: DrawableResource,
 
     onSeekProgress: (Float) -> Unit,
+    onSeekFinished: () -> Unit,
+
     onShuffleClick: () -> Unit,
     onPrevClick: () -> Unit,
     onPlayPauseClick: () -> Unit,
@@ -352,6 +444,7 @@ private fun PlayerBottomSheet(
                 Slider(
                     value = progress.coerceIn(0f, 1f),
                     onValueChange = onSeekProgress,
+                    onValueChangeFinished = onSeekFinished,
                     modifier = Modifier.weight(1f),
                     colors = SliderDefaults.colors(
                         thumbColor = Color.White.copy(alpha = 0.80f),
@@ -376,7 +469,6 @@ private fun PlayerBottomSheet(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // shuffle button
                 SmallPlayerButton(onClick = onShuffleClick) {
                     IconImage(
                         icon = icShuffle,
@@ -388,7 +480,6 @@ private fun PlayerBottomSheet(
 
                 Spacer(Modifier.weight(1f))
 
-                // previous button
                 SmallPlayerButton(onClick = onPrevClick) {
                     IconImage(
                         icon = icPrev,
@@ -409,7 +500,6 @@ private fun PlayerBottomSheet(
 
                 Spacer(Modifier.width(30.dp))
 
-                // next button
                 SmallPlayerButton(onClick = onNextClick) {
                     IconImage(
                         icon = icNext,
@@ -421,7 +511,6 @@ private fun PlayerBottomSheet(
 
                 Spacer(Modifier.weight(1f))
 
-                // repeat button
                 SmallPlayerButton(onClick = onRepeatClick) {
                     IconImage(
                         icon = icRepeat,
@@ -443,8 +532,7 @@ private fun BigPlayPauseButton(
     onClick: () -> Unit
 ) {
     Box(
-        modifier = Modifier
-            .clickable(onClick = onClick),
+        modifier = Modifier.clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         IconImagePlayPause(
@@ -477,10 +565,8 @@ private fun IconImage(
     size: Dp = 18.dp,
     tint: Color = Color(0xFF03237B)
 ) {
-    val painter = painterResource(icon)
-
     Image(
-        painter = painter,
+        painter = painterResource(icon),
         contentDescription = contentDescription,
         modifier = Modifier.size(size),
         colorFilter = tint(tint)
@@ -492,10 +578,8 @@ private fun IconImagePlayPause(
     icon: DrawableResource,
     contentDescription: String
 ) {
-    val painter = painterResource(icon)
-
     Image(
-        painter = painter,
+        painter = painterResource(icon),
         contentDescription = contentDescription,
         modifier = Modifier.size(60.dp),
         colorFilter = tint(Color.White.copy(alpha = 0.80f))

@@ -37,6 +37,8 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation("io.ktor:ktor-client-okhttp:3.3.3")
+            implementation(libs.media3.exoplayer)
+            implementation(libs.koin.android)
         }
 
         commonMain.dependencies {
@@ -55,10 +57,13 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
 
+            // koin
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+
             // Lifecycle
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
-
 
             implementation(compose.material3)
             implementation(compose.components.resources)
@@ -69,9 +74,7 @@ kotlin {
             implementation("io.ktor:ktor-client-content-negotiation:3.3.3")
             implementation("io.ktor:ktor-serialization-kotlinx-json:3.3.3")
 
-            // Navigator
-
-
+            // navigator
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.1")
 
             implementation("cafe.adriel.voyager:voyager-navigator:${voyagerVersion}")

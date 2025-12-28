@@ -6,7 +6,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import com.affirmation.app.presentation.screen.MainScreen
 
 @Composable
-fun App() {
+fun AffirmationApp() {
     MaterialTheme {
         Navigator(MainScreen())
     }
