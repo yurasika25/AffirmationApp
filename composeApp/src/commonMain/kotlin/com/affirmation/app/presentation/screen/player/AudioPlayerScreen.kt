@@ -70,9 +70,10 @@ import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 import kotlin.math.roundToLong
 
-class MusicPlayerScreen(
+class AudioPlayerScreen(
     private val imageUrl: String,
     private val title: String,
+    private val audioUrl: String = ""
 ) : Screen {
 
     @Composable
@@ -83,11 +84,10 @@ class MusicPlayerScreen(
         val controller = koinInject<PlayerController>()
         val playerState by controller.state.collectAsState()
 
-        val url = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
 
-        LaunchedEffect(controller, url) {
+        LaunchedEffect(controller, audioUrl) {
             controller.setSource(
-                source = AudioSource.Url(url),
+                source = AudioSource.Url(audioUrl),
                 playWhenReady = true
             )
         }
@@ -100,8 +100,7 @@ class MusicPlayerScreen(
             navigator = navigator,
             imageUrl = imageUrl,
             title = title,
-            url,
-
+            url = audioUrl,
             icBack = Res.drawable.im_back_btn,
             icFavorite = Res.drawable.im_favorite,
             icShare = Res.drawable.im_share,
@@ -338,7 +337,7 @@ private fun RightActionsColumn(
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(14.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         ActionChip(icon = icFavorite, label = "Favorite", onClick = onFavoriteClick)
         ActionChip(icon = icShare, label = "Share", onClick = onShareClick)
@@ -358,27 +357,26 @@ private fun ActionChip(
             modifier = Modifier
                 .size(44.dp)
                 .clip(RoundedCornerShape(12.dp))
-                .background(Color.White.copy(alpha = 0.64f))
                 .clickable(onClick = onClick),
             contentAlignment = Alignment.Center
         ) {
             Image(
                 painter = painterResource(icon),
                 contentDescription = label,
-                modifier = Modifier.size(22.dp),
-                colorFilter = tint(Color(0xFF03237B))
+                modifier = Modifier.size(24.dp),
+                colorFilter = tint(Color(0xFFECECEC))
             )
         }
 
-        Spacer(Modifier.height(6.dp))
+//        Spacer(Modifier.height(6.dp))
 
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelMedium.copy(
-                color = Color.White.copy(alpha = 0.64f),
-                fontWeight = FontWeight.Medium
-            )
-        )
+//        Text(
+//            text = label,
+//            style = MaterialTheme.typography.labelMedium.copy(
+//                color = Color.White.copy(alpha = 0.64f),
+//                fontWeight = FontWeight.Medium
+//            )
+//        )
     }
 }
 
@@ -409,7 +407,7 @@ private fun PlayerBottomSheet(
 ) {
     Surface(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(22.dp),
+        shape = RoundedCornerShape(28.dp),
         color = Color.White.copy(alpha = 0.10f),
         tonalElevation = 0.dp,
         shadowElevation = 0.dp
@@ -603,7 +601,6 @@ private fun IconButtonChip(
         modifier = modifier
             .size(44.dp)
             .clip(RoundedCornerShape(12.dp))
-            .background(Color.White.copy(alpha = 0.64f))
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
@@ -611,7 +608,7 @@ private fun IconButtonChip(
             painter = painterResource(icon),
             contentDescription = "Back",
             modifier = Modifier.size(20.dp),
-            colorFilter = tint(Color(0xFF03237B))
+            colorFilter = tint(Color(0xFFDEDEDE))
         )
     }
 }

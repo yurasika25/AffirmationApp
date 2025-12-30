@@ -47,9 +47,8 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.affirmation.app.createHttpClient
 import com.affirmation.app.data.network.ApiService
 import com.affirmation.app.domain.model.NotificationModel
-import com.affirmation.app.presentation.screen.PlayerScreen
+import com.affirmation.app.presentation.screen.player.AudioPlayerScreen
 import com.affirmation.app.presentation.viewModel.NotificationsViewModel
-import com.affirmation.app.utils.items
 import org.jetbrains.compose.resources.painterResource
 import kotlin.random.Random
 
@@ -113,26 +112,14 @@ class NotificationScreen() : Screen {
                                 dataToShow,
                                 onPlay = {
                                     navigator.push(
-                                        PlayerScreen(
-                                            image = items[0].icon,
-                                            title = items[0].text,
+                                        AudioPlayerScreen(
+                                            "https://res.cloudinary.com/dkbbgpfcl/image/upload/v1766805789/pexels-brett-sayles-3910141_2_gqicrd.jpg",
+                                            "Morning Energy"
                                         )
                                     )
                                 },
                             )
                         }
-
-                        else -> NotificationList(
-                            dataToShow,
-                            onPlay = {
-                                navigator.push(
-                                    PlayerScreen(
-                                        image = items[0].icon,
-                                        title = items[0].text,
-                                    )
-                                )
-                            },
-                        )
                     }
                 }
             }

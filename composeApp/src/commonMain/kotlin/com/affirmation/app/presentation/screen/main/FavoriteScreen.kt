@@ -44,7 +44,7 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.affirmation.app.presentation.screen.PlayerScreen
+import com.affirmation.app.presentation.screen.player.AudioPlayerScreen
 import com.affirmation.app.utils.items
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
@@ -105,9 +105,9 @@ class FavoriteScreen() : Screen {
                             data = f,
                             onPlay = {
                                 navigator.push(
-                                    PlayerScreen(
-                                        image = items[0].icon,
-                                        title = items[0].text,
+                                    AudioPlayerScreen(
+                                        "https://res.cloudinary.com/dkbbgpfcl/image/upload/v1766805789/pexels-brett-sayles-3910141_2_gqicrd.jpg",
+                                        "Morning Energy"
                                     )
                                 )
                             },
