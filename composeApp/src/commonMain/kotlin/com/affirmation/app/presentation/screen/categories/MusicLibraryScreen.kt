@@ -55,7 +55,7 @@ import com.affirmation.app.presentation.screen.categories.helper.heroMusicLibrar
 import com.affirmation.app.presentation.screen.player.AudioPlayerScreen
 import org.jetbrains.compose.resources.painterResource
 
-class MusicLibraryScreen: Screen {
+class MusicScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.current

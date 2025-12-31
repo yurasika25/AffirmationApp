@@ -2,7 +2,7 @@ package com.affirmation.app.presentation.screen.main
 
 import AffirmationToolBar
 import androidx.compose.foundation.background
-imimport androidx.compose.foundation.border
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
