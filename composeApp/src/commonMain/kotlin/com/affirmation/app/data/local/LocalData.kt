@@ -1,16 +1,7 @@
-package com.affirmation.app.utils
+package com.affirmation.app.data.local
 
 import affirmationapp.composeapp.generated.resources.Res
-import affirmationapp.composeapp.generated.resources.image1
-import affirmationapp.composeapp.generated.resources.image10
-import affirmationapp.composeapp.generated.resources.image2
-import affirmationapp.composeapp.generated.resources.image3
-import affirmationapp.composeapp.generated.resources.image4
-import affirmationapp.composeapp.generated.resources.image5
-import affirmationapp.composeapp.generated.resources.image6
-import affirmationapp.composeapp.generated.resources.image7
-import affirmationapp.composeapp.generated.resources.image8
-import affirmationapp.composeapp.generated.resources.image9
+import affirmationapp.composeapp.generated.resources.*
 import com.affirmation.app.domain.model.MotivationItem
 
 

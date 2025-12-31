@@ -49,22 +49,16 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import coil3.compose.AsyncImage
+import com.affirmation.app.presentation.nav.ext.root
 import com.affirmation.app.presentation.screen.categories.BookScreen
 import com.affirmation.app.presentation.screen.categories.CardsScreen
 import com.affirmation.app.presentation.screen.categories.PhotoScreen
 import com.affirmation.app.presentation.screen.categories.VideoScreen
 import com.affirmation.app.presentation.screen.categories.MusicScreen
-import com.affirmation.app.utils.theme.dancingSemiBoldFont
+import com.affirmation.app.presentation.theme.dancingSemiBoldFont
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-
-class HomeScreen() : Screen {
-    @Composable
-    override fun Content() {
-        InspirationHomeContent()
-    }
-}
 
 @Composable
 fun InspirationHomeContent(
@@ -162,7 +156,7 @@ fun InspirationHomeContent(
                             "Book" -> BookScreen()
                             else -> { throw IllegalArgumentException("Unknown category: ${category.label}") }
                         }
-                        navigator?.push(screen)
+                        navigator?.root()?.push(screen)
                     }
                 )
             }

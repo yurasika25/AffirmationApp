@@ -1,12 +1,14 @@
 package com.affirmation.app.main.di
 
+import com.affirmation.app.createHttpClient
+import com.affirmation.app.data.network.ApiService
 import com.affirmation.app.main.playercontroller.AndroidPlayerController
 import com.affirmation.app.presentation.screen.player.controller.PlayerController
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 actual val platformModule = module {
-    factory<PlayerController> {
-        AndroidPlayerController(context = androidContext())
-    }
+    factory<PlayerController> { AndroidPlayerController(context = androidContext()) }
+    single { createHttpClient() }
+    single { ApiService(client = get()) }
 }

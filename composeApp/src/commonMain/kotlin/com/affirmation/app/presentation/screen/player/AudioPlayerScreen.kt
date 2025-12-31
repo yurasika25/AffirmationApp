@@ -5,7 +5,7 @@ package com.affirmation.app.presentation.screen.player
 import affirmationapp.composeapp.generated.resources.Res
 import affirmationapp.composeapp.generated.resources.im_back_btn
 import affirmationapp.composeapp.generated.resources.im_download
-import affirmationapp.composeapp.generated.resources.im_favorite
+import affirmationapp.composeapp.generated.resources.im_saved
 import affirmationapp.composeapp.generated.resources.im_list
 import affirmationapp.composeapp.generated.resources.im_pause
 import affirmationapp.composeapp.generated.resources.im_play
@@ -64,7 +64,6 @@ import coil3.compose.AsyncImage
 import com.affirmation.app.presentation.screen.player.controller.PlayerController
 import com.affirmation.app.presentation.screen.player.model.AudioSource
 import com.affirmation.app.presentation.screen.player.state.PlayerState
-import com.affirmation.app.utils.HideBottomBar
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
@@ -79,7 +78,6 @@ class AudioPlayerScreen(
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        HideBottomBar()
 
         val controller = koinInject<PlayerController>()
         val playerState by controller.state.collectAsState()
@@ -102,7 +100,7 @@ class AudioPlayerScreen(
             title = title,
             url = audioUrl,
             icBack = Res.drawable.im_back_btn,
-            icFavorite = Res.drawable.im_favorite,
+            icFavorite = Res.drawable.im_saved,
             icShare = Res.drawable.im_share,
             icSave = Res.drawable.im_download,
             icLists = Res.drawable.im_list,

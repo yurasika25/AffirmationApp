@@ -1,6 +1,5 @@
 package com.affirmation.app.data.network
 
-import com.affirmation.app.data.network.BaseUrl.BASE_URL
 import com.affirmation.app.domain.model.AffirmationData
 import com.affirmation.app.domain.model.NotificationModel
 import com.affirmation.app.domain.model.UpdateUserProfileModel
@@ -15,20 +14,22 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import kotlinx.serialization.json.Json
 
-class ApiService(val client: HttpClient) {
+class ApiService(
+    private val client: HttpClient
+) {
 
     suspend fun getUserDetails(): UpdateUserProfileModel {
-        val jsonString = client.get("${BASE_URL}/user/details").bodyAsText()
+        val jsonString = client.get("${BaseUrl.BASE_URL}/user/details").bodyAsText()
         return Json.decodeFromString(jsonString)
     }
 
     suspend fun getAffirmationList(): List<AffirmationData> {
-        return client.get("${BASE_URL}/affirmations").body()
+        return client.get("${BaseUrl.BASE_URL}/affirmations").body()
     }
 
     suspend fun updateUserProfile(profile: UpdateUserProfileModel): Boolean {
         return try {
-            val response = client.put("$BASE_URL/user/profile/update") {
+            val response = client.put("${BaseUrl.BASE_URL}/user/profile/update") {
                 contentType(ContentType.Application.Json)
                 setBody(profile)
             }
@@ -39,11 +40,11 @@ class ApiService(val client: HttpClient) {
     }
 
     suspend fun getNotificationList(): List<NotificationModel> {
-        return client.get("${BASE_URL}/notifications").body()
+        return client.get("${BaseUrl.BASE_URL}/notifications").body()
     }
 
     suspend fun getUserProfile(): UserProfileModel {
-        val jsonString = client.get("${BASE_URL}/user/profile").bodyAsText()
+        val jsonString = client.get("${BaseUrl.BASE_URL}/user/profile").bodyAsText()
         return Json.decodeFromString(jsonString)
     }
 }

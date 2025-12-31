@@ -9,7 +9,7 @@ import affirmationapp.composeapp.generated.resources.Res
 import affirmationapp.composeapp.generated.resources.im_back_btn
 import affirmationapp.composeapp.generated.resources.im_setting
 import androidx.compose.foundation.layout.size
-import com.affirmation.app.utils.theme.interSemiBoldFont
+import com.affirmation.app.presentation.theme.interSemiBoldFont
 import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)

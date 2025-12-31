@@ -15,11 +15,6 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.affirmation.app.createHttpClient
-import com.affirmation.app.data.network.ApiService
-import com.affirmation.app.domain.model.UpdateUserProfileModel
-import com.affirmation.app.utils.HideBottomBar
-import kotlinx.coroutines.launch
 
 data class EditProfileScreen(
     val firstNameArg: String,
@@ -34,14 +29,13 @@ data class EditProfileScreen(
     @Composable
     override fun Content() {
 
-        HideBottomBar()
 
         val pageBgTop = Color(0xFFF7FAFF)
         val pageBgBottom = Color(0xFFEAF1FF)
 
         val navigator = LocalNavigator.currentOrThrow
         val coroutineScope = rememberCoroutineScope()
-        val apiService = remember { ApiService(createHttpClient()) }
+//        val apiService = remember { ApiService(createHttpClient()) }
 
         var firstName by remember { mutableStateOf(firstNameArg) }
         var lastName by remember { mutableStateOf(lastNameArg) }
@@ -129,20 +123,20 @@ data class EditProfileScreen(
                     onClick = {
                         isLoading = true
                         message = null
-                        coroutineScope.launch {
-                            val success = apiService.updateUserProfile(
-                                UpdateUserProfileModel(
-                                    firstName = firstName,
-                                    lastName = lastName,
-                                    age = age,
-                                    phoneNumber = phone,
-                                    email = email,
-                                    gender = gender
-                                )
-                            )
-                            isLoading = false
-                            message = if (success) "Profile updated successfully" else "Failed to update profile"
-                        }
+//                        coroutineScope.launch {
+//                            val success = apiService.updateUserProfile(
+//                                UpdateUserProfileModel(
+//                                    firstName = firstName,
+//                                    lastName = lastName,
+//                                    age = age,
+//                                    phoneNumber = phone,
+//                                    email = email,
+//                                    gender = gender
+//                                )
+//                            )
+//                            isLoading = false
+//                            message = if (success) "Profile updated successfully" else "Failed to update profile"
+//                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()

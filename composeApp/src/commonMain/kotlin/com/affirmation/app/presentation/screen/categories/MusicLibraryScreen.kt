@@ -53,13 +53,11 @@ import com.affirmation.app.presentation.screen.categories.helper.Category.catego
 import com.affirmation.app.presentation.screen.categories.model.MusicCategoryModel
 import com.affirmation.app.presentation.screen.categories.helper.heroMusicLibraryUrl
 import com.affirmation.app.presentation.screen.player.AudioPlayerScreen
-import com.affirmation.app.utils.HideBottomBar
 import org.jetbrains.compose.resources.painterResource
 
 class MusicScreen : Screen {
     @Composable
     override fun Content() {
-        HideBottomBar()
         val navigator = LocalNavigator.current
         MusicLibraryScreen(
             onBackClick = { navigator?.pop() },

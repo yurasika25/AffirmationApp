@@ -41,80 +41,77 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.affirmation.app.data.local.items
+import com.affirmation.app.presentation.nav.ext.root
 import com.affirmation.app.presentation.screen.player.AudioPlayerScreen
-import com.affirmation.app.utils.items
+import com.affirmation.app.presentation.theme.LocalAffirmationColors
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
-class FavoriteScreen() : Screen {
+@Composable
+fun SavedScreen() {
 
-    @Composable
-    override fun Content() {
+    val colors = LocalAffirmationColors.current
+    val navigator = LocalNavigator.currentOrThrow
 
-        val navigator = LocalNavigator.currentOrThrow
+    val favorites = remember {
+        if (items.isNotEmpty()) items.mapIndexed { idx, it ->
+            FavoriteUiModel(
+                image = it.icon,
+                tag = listOf("#Self-development", "#Mindfulness", "#Motivation")[idx % 3],
+                title = it.text,
+                description = it.subtitle,
+                timeAgo = demoTimes[idx % demoTimes.size],
+                liked = true
+            )
+        } else fakeFavorites()
+    }
 
-        val pageBg = Color(0xFFFAF7FF)
-        val favorites = remember {
-            if (items.isNotEmpty()) items.mapIndexed { idx, it ->
-                FavoriteUiModel(
-                    image = it.icon,
-                    tag = listOf("#Self-development", "#Mindfulness", "#Motivation")[idx % 3],
-                    title = it.text,
-                    description = it.subtitle,
-                    timeAgo = demoTimes[idx % demoTimes.size],
-                    liked = true
-                )
-            } else fakeFavorites()
-        }
-
-        Scaffold(
-            containerColor = pageBg,
-            topBar = { AffirmationToolBar("My Favorites") },
-        ) { inner ->
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .padding(inner)
-                    .padding(horizontal = 20.dp)
-
-            ) {
-                Spacer(Modifier.height(6.dp))
-
-                Text(
-                    "${favorites.size} affirmations saved",
-                    color = Color(0xFF7D7796),
-                    fontSize = 14.sp,
-                    modifier = Modifier.padding(
-                        start = 20.dp,
-                        end = 20.dp,
-                        bottom = 8.dp,
-                        top = 0.dp
+    Scaffold(
+        topBar = { AffirmationToolBar("My Favorites") },
+    ) { inner ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        listOf(
+                            colors.screenGradientTop,
+                            colors.screenGradientBottom
+                        )
                     )
                 )
+                .padding(inner)
+        ) {
 
-                LazyColumn(
-                    contentPadding = PaddingValues(bottom = 110.dp),
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(14.dp)
-                ) {
-                    items(favorites) { f ->
-                        FavoriteCard(
-                            data = f,
-                            onPlay = {
-                                navigator.push(
-                                    AudioPlayerScreen(
-                                        "https://res.cloudinary.com/dkbbgpfcl/image/upload/v1766805789/pexels-brett-sayles-3910141_2_gqicrd.jpg",
-                                        "Morning Energy"
-                                    )
+            Spacer(Modifier.height(6.dp))
+
+            LazyColumn(
+                contentPadding = PaddingValues(
+                    start = 20.dp,
+                    end = 20.dp,
+                    bottom = 110.dp,
+                    top = 6.dp
+                ),
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(14.dp)
+            ) {
+                items(favorites) { f ->
+                    FavoriteCard(
+                        data = f,
+                        onPlay = {
+                            navigator.root().push(
+                                AudioPlayerScreen(
+                                    "https://res.cloudinary.com/dkbbgpfcl/image/upload/v1766805789/pexels-brett-sayles-3910141_2_gqicrd.jpg",
+                                    "Morning Energy"
                                 )
-                            },
-                            onReadMore = { /* TODO: open details */ },
-                            onToggleLike = { /* TODO: toggle like */ }
-                        )
-                    }
+                            )
+                        },
+                        onReadMore = { /* TODO: open details */ },
+                        onToggleLike = { /* TODO: toggle like */ }
+                    )
                 }
             }
         }
@@ -131,10 +128,7 @@ private fun FavoriteCard(
 ) {
     Surface(
         color = Color.White,
-        shape = RoundedCornerShape(18.dp),
-        border = BorderStroke(1.dp, Color(0x1A000000)),
-        tonalElevation = 0.dp,
-        shadowElevation = 0.dp,
+        shape = RoundedCornerShape(12.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(Modifier.fillMaxWidth()) {
@@ -142,7 +136,7 @@ private fun FavoriteCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(132.dp)
-                    .clip(RoundedCornerShape(topStart = 18.dp, topEnd = 18.dp))
+                    .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
             ) {
                 Image(
                     painter = painterResource(data.image),
@@ -208,7 +202,7 @@ private fun FavoriteCard(
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    PlayButton(text = "Play", tint = Color(0xFFB99BF7), onClick = onPlay)
+                    PlayButton(text = "Play", tint = Color(0xC63351A0), onClick = onPlay)
                     ReadMorePill(onClick = onReadMore)
                 }
 
@@ -226,12 +220,13 @@ private fun FavoriteCard(
 @Composable
 private fun PillChip(text: String, modifier: Modifier = Modifier) {
     Surface(
-        color = Color(0xFFF4EEFF),
+        color = Color.Black.copy(alpha = 0.35f),
         shape = RoundedCornerShape(16.dp),
         modifier = modifier
     ) {
         Text(
             text,
+            color = Color.White,
             style = MaterialTheme.typography.labelLarge,
             modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
         )

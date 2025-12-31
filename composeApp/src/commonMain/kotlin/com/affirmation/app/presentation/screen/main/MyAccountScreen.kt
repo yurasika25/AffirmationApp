@@ -28,152 +28,150 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.affirmation.app.domain.model.UserProfileModel
+import com.affirmation.app.presentation.nav.ext.root
 import com.affirmation.app.presentation.screen.EditProfileScreen
 import com.affirmation.app.presentation.screen.SettingScreen
-import com.affirmation.app.utils.theme.dancingRegularFont
+import com.affirmation.app.presentation.theme.LocalAffirmationColors
+import com.affirmation.app.presentation.theme.dancingRegularFont
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
-class ProfileScreen() : Screen {
+@Composable
+fun MyAccountScreen() {
 
-    @Composable
-    override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
+    val colors = LocalAffirmationColors.current
+    val navigator = LocalNavigator.currentOrThrow
 
-        val user = remember {
-            UserProfileModel(
-                firstName = "User",
-                lastName = "",
-                gender = "",
-                age = "",
-                phoneNumber = "",
-                email = "test.email@outlook.com"
+    val user = remember {
+        UserProfileModel(
+            firstName = "User",
+            lastName = "",
+            gender = "",
+            age = "",
+            phoneNumber = "",
+            email = "test.email@outlook.com"
+        )
+    }
+
+    Scaffold(
+        containerColor = Color.Transparent,
+        topBar = {
+            AffirmationToolBar(
+                title = "My Account",
+                showSettings = true,
+                onSettingsClick = { navigator.root().push(SettingScreen()) }
             )
         }
+    ) { innerPadding ->
 
-        val pageBgTop = Color(0xFFF7FAFF)
-        val pageBgBottom = Color(0xFFEAF1FF)
+        val topOnly = PaddingValues(top = innerPadding.calculateTopPadding())
 
-        val primaryText = Color(0xFF111827)
-        val secondaryText = Color(0xFF6B7280)
-
-        val border = Color(0x14000000)
-        val iconTint = Color(0xFF1651AE)
-
-        Scaffold(
-            containerColor = Color.Transparent,
-            topBar = {
-                AffirmationToolBar(
-                    title = "My Account",
-                    showSettings = true,
-                    onSettingsClick = { navigator.push(SettingScreen()) }
-                )
-            }
-        ) { innerPadding ->
-
-            val topOnly = PaddingValues(top = innerPadding.calculateTopPadding())
-
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Brush.verticalGradient(listOf(pageBgTop, pageBgBottom)))
-                    .padding(topOnly)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .verticalScroll(rememberScrollState())
-                        .padding(horizontal = 20.dp)
-                        .padding(bottom = 140.dp)
-                ) {
-
-                    Spacer(Modifier.height(6.dp))
-
-                    Text(
-                        text = "Personal settings & activity",
-                        color = secondaryText,
-                        fontSize = 14.sp
-                    )
-
-                    Spacer(Modifier.height(16.dp))
-
-                    AccountCard(
-                        name = user.firstName.toString(),
-                        email = user.email,
-                        border = border,
-                        onEdit = {
-                            navigator.push(
-                                EditProfileScreen(
-                                    firstNameArg = user.firstName.orEmpty(),
-                                    lastNameArg = user.lastName,
-                                    ageArg = user.age,
-                                    phoneArg = user.phoneNumber,
-                                    emailArg = user.email,
-                                    genderArg = user.gender
-                                )
-                            )
-                        }
-                    )
-
-                    Spacer(Modifier.height(22.dp))
-
-                    SectionHeader(
-                        title = "My Activity",
-                        subtitle = "Your recent activity at a glance",
-                        primaryText = primaryText,
-                        secondaryText = secondaryText
-                    )
-
-                    Spacer(Modifier.height(14.dp))
-
-                    ActivityGrid(
-                        border = border,
-                        items = listOf(
-                            ActivityItem(
-                                icon = Res.drawable.im_cards,
-                                labelTop = "12 viewed",
-                                labelBottom = "Affirmation"
-                            ),
-                            ActivityItem(
-                                icon = Res.drawable.im_photo,
-                                labelTop = "8 saved",
-                                labelBottom = "Gallery"
-                            ),
-                            ActivityItem(
-                                icon = Res.drawable.im_music,
-                                labelTop = "6 liked",
-                                labelBottom = "Audio"
-                            ),
-                            ActivityItem(
-                                icon = Res.drawable.im_video,
-                                labelTop = "15 watched",
-                                labelBottom = "Videos"
-                            )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        listOf(
+                            colors.screenGradientTop,
+                            colors.screenGradientBottom
                         )
                     )
+                )
+                .padding(topOnly)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 20.dp)
+                    .padding(bottom = 140.dp)
+            ) {
 
-                    Spacer(Modifier.height(22.dp))
+                Spacer(Modifier.height(6.dp))
 
-                    SectionHeader(
-                        title = "My Affirmation",
-                        subtitle = "Your personal power phrase",
-                        primaryText = primaryText,
-                        secondaryText = secondaryText
+                Text(
+                    text = "Personal settings & activity",
+                    color = colors.primaryTextColor,
+                    fontSize = 14.sp
+                )
+
+                Spacer(Modifier.height(16.dp))
+
+                AccountCard(
+                    name = user.firstName.toString(),
+                    email = user.email,
+                    border = colors.borderColor,
+                    onEdit = {
+                        navigator.root().push(
+                            EditProfileScreen(
+                                firstNameArg = user.firstName.orEmpty(),
+                                lastNameArg = user.lastName,
+                                ageArg = user.age,
+                                phoneArg = user.phoneNumber,
+                                emailArg = user.email,
+                                genderArg = user.gender
+                            )
+                        )
+                    }
+                )
+
+                Spacer(Modifier.height(22.dp))
+
+                SectionHeader(
+                    title = "My Activity",
+                    subtitle = "Your recent activity at a glance",
+                    primaryText = colors.primaryTextColor,
+                    secondaryText = colors.secondaryTextColor
+                )
+
+                Spacer(Modifier.height(14.dp))
+
+                ActivityGrid(
+                    border = colors.borderColor,
+                    items = listOf(
+                        ActivityItem(
+                            icon = Res.drawable.im_cards,
+                            labelTop = "12 viewed",
+                            labelBottom = "Affirmation"
+                        ),
+                        ActivityItem(
+                            icon = Res.drawable.im_photo,
+                            labelTop = "8 saved",
+                            labelBottom = "Gallery"
+                        ),
+                        ActivityItem(
+                            icon = Res.drawable.im_music,
+                            labelTop = "6 liked",
+                            labelBottom = "Audio"
+                        ),
+                        ActivityItem(
+                            icon = Res.drawable.im_video,
+                            labelTop = "15 watched",
+                            labelBottom = "Videos"
+                        )
                     )
+                )
 
-                    Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(22.dp))
 
-                    AffirmationCard(
-                        text = "\"Success is the ability to go from failure to failure without losing enthusiasm.\"",
-                        onEdit = {
-                            // TODO: open edit affirmation screen/dialog
-                        }
-                    )
-                }
+                SectionHeader(
+                    title = "My Affirmation",
+                    subtitle = "Your personal power phrase",
+                    primaryText = colors.primaryTextColor,
+                    secondaryText = colors.secondaryTextColor
+                )
+
+                Spacer(Modifier.height(12.dp))
+
+                AffirmationCard(
+                    text = "\"Success is the ability to go from failure to failure without losing enthusiasm.\"",
+                    onEdit = {
+                        // TODO: open edit affirmation screen/dialog
+                    }
+                )
             }
         }
     }

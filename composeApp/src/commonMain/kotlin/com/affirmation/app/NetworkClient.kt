@@ -9,18 +9,19 @@ import kotlinx.serialization.json.Json
 
 expect fun platformHttpClient(): HttpClient
 
-fun createHttpClient(): HttpClient = platformHttpClient().config {
-    install(ContentNegotiation) {
-        json(
-            Json {
-                ignoreUnknownKeys = true
-                prettyPrint = true
-                isLenient = true
-            }
-        )
+fun createHttpClient(): HttpClient =
+    platformHttpClient().config {
+        install(ContentNegotiation) {
+            json(
+                Json {
+                    ignoreUnknownKeys = true
+                    prettyPrint = true
+                    isLenient = true
+                }
+            )
+        }
+        install(Logging) {
+            logger = platformLogger()
+            level = LogLevel.ALL
+        }
     }
-    install(Logging) {
-        logger = platformLogger()
-        level = LogLevel.ALL
-    }
-}

@@ -1,4 +1,4 @@
-package com.affirmation.app.utils.theme
+package com.affirmation.app.presentation.theme
 
 import affirmationapp.composeapp.generated.resources.Res
 import affirmationapp.composeapp.generated.resources.dancing_script_regular

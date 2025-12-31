@@ -1,14 +1,14 @@
 package com.affirmation.app
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.navigator.Navigator
-import com.affirmation.app.presentation.screen.MainScreen
+import com.affirmation.app.presentation.screen.TabsHostScreen
+import com.affirmation.app.presentation.theme.AffirmationTheme
 
 @Composable
 fun AffirmationApp() {
-    MaterialTheme {
-        Navigator(MainScreen())
+    AffirmationTheme {
+        Navigator(TabsHostScreen())
     }
 }
 

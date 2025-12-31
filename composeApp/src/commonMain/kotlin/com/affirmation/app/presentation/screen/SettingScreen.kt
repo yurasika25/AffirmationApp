@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.affirmation.app.utils.HideBottomBar
 
 class SettingScreen : Screen {
 
@@ -29,7 +28,6 @@ class SettingScreen : Screen {
     @Composable
     override fun Content() {
 
-        HideBottomBar()
 
         val pageBgTop = Color(0xFFF7FAFF)
         val pageBgBottom = Color(0xFFEAF1FF)
