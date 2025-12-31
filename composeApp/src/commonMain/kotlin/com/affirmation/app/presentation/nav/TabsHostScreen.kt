@@ -1,4 +1,4 @@
-package com.affirmation.app.presentation.screen
+package com.affirmation.app.presentation.nav
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,10 +25,6 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
-import com.affirmation.app.presentation.nav.HomeTab
-import com.affirmation.app.presentation.nav.MeTab
-import com.affirmation.app.presentation.nav.RemindersTab
-import com.affirmation.app.presentation.nav.SavedTab
 
 class TabsHostScreen : Screen {
 
