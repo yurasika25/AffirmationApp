@@ -54,7 +54,7 @@ import com.affirmation.app.presentation.screen.categories.BookScreen
 import com.affirmation.app.presentation.screen.categories.CardsScreen
 import com.affirmation.app.presentation.screen.categories.PhotoScreen
 import com.affirmation.app.presentation.screen.categories.VideoScreen
-import com.affirmation.app.presentation.screen.categories.MusicScreen
+import com.affirmation.app.presentation.screen.categories.MusicLibraryScreen
 import com.affirmation.app.presentation.theme.dancingSemiBoldFont
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
@@ -150,7 +150,7 @@ fun InspirationHomeContent(
                     onCategoryClick = { category ->
                         val screen: Screen = when (category.label) {
                             "Cards" -> CardsScreen()
-                            "Music" -> MusicScreen()
+                            "Music" -> MusicLibraryScreen()
                             "Video" -> VideoScreen()
                             "Photo" -> PhotoScreen()
                             "Book" -> BookScreen()
